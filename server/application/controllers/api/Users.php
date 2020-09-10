@@ -1,0 +1,333 @@
+<?php
+
+use Opis\JsonSchema\Validator;
+use Restserver\Libraries\REST_Controller;
+
+defined('BASEPATH') or exit('No direct script access allowed');
+
+require APPPATH . 'libraries/REST_Controller.php';
+require APPPATH . 'libraries/Format.php';
+
+class Users extends REST_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        // load model user
+        $this->load->model("Users_model");
+    }
+
+    public function roles_get()
+    {
+        $user_role = $this->Users_model->get_user_role();
+
+        // var_dump($user_role);
+        // die;
+        if ($user_role) {
+            $api['code'] = 200;
+            $api['status'] = true;
+            $api['message'] = 'succesfully';
+            $api['user_role'] = $user_role;
+            $this->response($api, REST_Controller::HTTP_OK);
+        } else {
+            $api['code'] = 404;
+            $api['status'] = false;
+            $api['message'] = "role tidak ditemukan";
+            $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+    private function register_validation($json_data)
+    {
+        $validate = new Validator();
+
+        $schema = (object) [
+            "type" => "object",
+            "properties" => (object) [
+                "first_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 45
+                ],
+                "last_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 45
+                ],
+                "email" => (object) [
+                    "type" => 'string',
+                    "format" => 'email',
+                    "maxLength" => 100
+                ],
+                "password" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ],
+                "role" => (object) [
+                    "type" => 'integer'
+                ]
+            ],
+            "required" => ["first_name", "last_name", "email", "password", "role"],
+            "additionalProperties" => false
+        ];
+
+        $validation = $validate->dataValidation((object) $json_data, $schema);
+        if (!$validation->isValid()) {
+            $error['status'] = 400;
+            $error['error'] = $validation->getFirstError()->keyword();
+            $error['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
+            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            return true;
+        }
+    }
+
+    public function register_post()
+    {
+        $data = $this->post();
+        $data['role'] = 2001;
+
+        if ($this->register_validation($data)) {
+            // var_dump($data);
+            // die;
+            $result = $this->Users_model->register_user($data);
+            if ($result === 1) {
+                $api['code'] = 200;
+                $api['status'] = true;
+                $api['message'] = "account has been registered";
+                // $api['user'] = $message;
+                $this->response($api, REST_Controller::HTTP_OK);
+            } else {
+                $api['code'] = 500;
+                $api['status'] = false;
+                $api['message'] = "connot register account";
+                $api['error_details'] = $result['message'];
+                $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    private function login_validation($json_data)
+    {
+        $validate = new Validator();
+
+        $schema = (object) [
+            "type" => "object",
+            "properties" => (object) [
+                "email" => (object) [
+                    "type" => 'string',
+                    "format" => 'email',
+                    "maxLength" => 100
+                ],
+                "password" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ]
+            ],
+            "required" => ["email", "password"],
+            "additionalProperties" => false
+        ];
+
+        $validation = $validate->dataValidation((object) $json_data, $schema);
+        if (!$validation->isValid()) {
+            $error['status'] = 400;
+            $error['error'] = $validation->getFirstError()->keyword();
+            $error['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
+            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            return true;
+        }
+    }
+
+    public function login_post()
+    {
+        $data = $this->post();
+        if ($this->login_validation($data)) {
+            $result = $this->Users_model->login($data);
+            // var_dump($result);
+            // die;
+            if ($result['status']) {
+                $api['code'] = 200;
+                $api['status'] = true;
+                $api['user_data'] = $result['login_data'];
+                $this->response($api, REST_Controller::HTTP_OK);
+            } else {
+                if ($result['code'] === 404) {
+                    $api['code'] = 404;
+                    $api['status'] = false;
+                    $api['message'] = "Failed to login";
+                    $api['error_details'] = $result['message'];
+                    $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+                } elseif ($result['code'] === 400) {
+                    $api['code'] = 400;
+                    $api['status'] = false;
+                    $api['message'] = "Failed to login";
+                    $api['error_details'] = $result['message'];
+                    $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                }
+            }
+        }
+    }
+
+    public function detail_get($id)
+    {
+        $user_detail = $this->Users_model->get_user_details((int) $id);
+        if ($user_detail) {
+            $api['code'] = 200;
+            $api['status'] = true;
+            $api['message'] = 'succesfully';
+            $api['user_role'] = $user_detail;
+            $this->response($api, REST_Controller::HTTP_OK);
+        } else {
+            $api['code'] = 404;
+            $api['status'] = false;
+            $api['message'] = "role tidak ditemukan";
+            $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+    private function detail_validation($json_data)
+    {
+        $validate = new Validator();
+
+        $schema = (object) [
+            "type" => "object",
+            "properties" => (object) [
+                "first_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 45
+                ],
+                "last_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 45
+                ],
+                "gender" => (object) [
+                    "enum" => ['M', 'F']
+                ],
+                "phone" => (object) [
+                    "type" => 'string',
+                    "maxLength" => 20
+                ],
+                "address" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ],
+                "city" => (object) [
+                    "type" => 'string',
+                    "maxLength" => 100
+                ],
+                "zipcode" => (object) [
+                    "type" => "string",
+                    "maxLength" => 10
+                ],
+                "image" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ]
+            ],
+            "required" => ["first_name", "last_name", "gender", "phone", "address", "city", "zipcode", "image"],
+            "additionalProperties" => false
+        ];
+
+        $validation = $validate->dataValidation((object) $json_data, $schema);
+        if (!$validation->isValid()) {
+            $error['status'] = 400;
+            $error['error'] = $validation->getFirstError()->keyword();
+            $error['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
+            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            return true;
+        }
+    }
+
+    public function detail_put($id)
+    {
+        $data = $this->put();
+        if ($this->detail_validation($data)) {
+            $data['id'] = (int) $id;
+
+            $result = $this->Users_model->update_user_detail($data);
+            if ($result === 1) {
+                $api['code'] = 200;
+                $api['status'] = true;
+                $api['message'] = 'succesfully';
+                $api['detail'] = 'profile updated';
+                $this->response($api, REST_Controller::HTTP_OK);
+            } elseif ($result === 0) {
+                $api['code'] = 304;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = 'profile not changed';
+                $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
+            } else {
+                $api['code'] = 500;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = $result;
+                $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    private function change_password_validation($json_data)
+    {
+        $validate = new Validator();
+
+        $schema = (object) [
+            "type" => "object",
+            "properties" => (object) [
+                "old_password" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ],
+                "new_password" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ]
+            ],
+            "required" => ["old_password", "new_password"],
+            "additionalProperties" => false
+        ];
+
+        $validation = $validate->dataValidation((object) $json_data, $schema);
+        if (!$validation->isValid()) {
+            $error['status'] = 400;
+            $error['error'] = $validation->getFirstError()->keyword();
+            $error['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
+            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            return true;
+        }
+    }
+
+    public function password_put($id)
+    {
+        $data = $this->put();
+        if ($this->change_password_validation($data)) {
+            $data['id'] = (int) $id;
+            $result = $this->Users_model->update_password($data);
+            if ($result === 1) {
+                $api['code'] = 200;
+                $api['status'] = true;
+                $api['message'] = 'succesfully';
+                $api['detail'] = 'password changed';
+                $this->response($api, REST_Controller::HTTP_OK);
+            } elseif ($result === 0) {
+                $api['code'] = 304;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = 'password not changed';
+                $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
+            } else {
+                $api['code'] = 500;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = $result;
+                $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+}
