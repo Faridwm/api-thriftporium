@@ -214,8 +214,7 @@ class Users extends REST_Controller
                     "maxLength" => 255
                 ],
                 "city" => (object) [
-                    "type" => 'string',
-                    "maxLength" => 100
+                    "type" => 'integer'
                 ],
                 "zipcode" => (object) [
                     "type" => "string",

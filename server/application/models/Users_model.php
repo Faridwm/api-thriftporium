@@ -95,7 +95,7 @@ class Users_model extends CI_Model
         $check_id = $this->db->query("SELECT 1 FROM users WHERE id = $id")->row_array();
 
         if ($check_id) {
-            $query_update = "UPDATE users SET user_firstname = '$first_name', user_lastname = '$last_name', user_gender = '$gender', user_phone = '$phone', user_address = '$address', user_city = '$city', user_zipcode = '$zipcode', user_image = '$image', modified_at = NOW() WHERE id = $id";
+            $query_update = "UPDATE users SET user_firstname = '$first_name', user_lastname = '$last_name', user_gender = '$gender', user_phone = '$phone', user_address = '$address', user_city = $city, user_zipcode = '$zipcode', user_image = '$image', modified_at = NOW() WHERE id = $id";
 
             $this->db->trans_begin();
             if (!$this->db->simple_query($query_update)) {
