@@ -27,7 +27,7 @@ class Users extends REST_Controller
         if ($user_role) {
             $api['code'] = 200;
             $api['status'] = true;
-            $api['message'] = 'succesfully';
+            $api['message'] = 'successful';
             $api['user_role'] = $user_role;
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
@@ -72,11 +72,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $error['status'] = 400;
-            $error['error'] = $validation->getFirstError()->keyword();
-            $error['error_data'] =  $validation->getFirstError()->dataPointer();
-            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
-            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+            $api['code'] = 400;
+            $api['status'] = false;
+            $api['error'] = $validation->getFirstError()->keyword();
+            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
+            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             return true;
         }
@@ -130,11 +131,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $error['status'] = 400;
-            $error['error'] = $validation->getFirstError()->keyword();
-            $error['error_data'] =  $validation->getFirstError()->dataPointer();
-            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
-            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+            $api['code'] = 400;
+            $api['status'] = false;
+            $api['error'] = $validation->getFirstError()->keyword();
+            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
+            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             return true;
         }
@@ -150,6 +152,7 @@ class Users extends REST_Controller
             if ($result['status']) {
                 $api['code'] = 200;
                 $api['status'] = true;
+                $api['message'] = "successful";
                 $api['user_data'] = $result['login_data'];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
@@ -176,7 +179,7 @@ class Users extends REST_Controller
         if ($user_detail) {
             $api['code'] = 200;
             $api['status'] = true;
-            $api['message'] = 'succesfully';
+            $api['message'] = 'successful';
             $api['user_role'] = $user_detail;
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
@@ -231,11 +234,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $error['status'] = 400;
-            $error['error'] = $validation->getFirstError()->keyword();
-            $error['error_data'] =  $validation->getFirstError()->dataPointer();
-            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
-            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+            $api['code'] = 400;
+            $api['status'] = false;
+            $api['error'] = $validation->getFirstError()->keyword();
+            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
+            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             return true;
         }
@@ -251,7 +255,7 @@ class Users extends REST_Controller
             if ($result === 1) {
                 $api['code'] = 200;
                 $api['status'] = true;
-                $api['message'] = 'succesfully';
+                $api['message'] = 'successful';
                 $api['detail'] = 'profile updated';
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
@@ -292,11 +296,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $error['status'] = 400;
-            $error['error'] = $validation->getFirstError()->keyword();
-            $error['error_data'] =  $validation->getFirstError()->dataPointer();
-            // $error['message'] = $error['error'] . " in " .  $error['error_data'] . " field";
-            $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+            $api['code'] = 400;
+            $api['status'] = false;
+            $api['error'] = $validation->getFirstError()->keyword();
+            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
+            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             return true;
         }
@@ -311,7 +316,7 @@ class Users extends REST_Controller
             if ($result === 1) {
                 $api['code'] = 200;
                 $api['status'] = true;
-                $api['message'] = 'succesfully';
+                $api['message'] = 'successful';
                 $api['detail'] = 'password changed';
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
