@@ -81,6 +81,12 @@ $route['api/users/password/(:num)'] = '403_override';
 $route['api/users/password'] = '403_override';
 $route['user/password/(:num)']['PUT'] = 'api/users/password/$1';
 
+$route['api/cart'] = '403_override';
+$route['user/cart']['GET'] = 'api/cart';
+$route['user/cart']['POST'] = 'api/cart';
+$route['user/cart']['DELETE'] = 'api/cart';
+$route['user/cart']['PUT'] = 'api/cart';
+
 // product routes
 $route['api/categoryproduct'] = '403_override';
 $route['product/category']['GET'] = 'api/categoryproduct';
