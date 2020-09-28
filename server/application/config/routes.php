@@ -87,3 +87,17 @@ $route['product/category']['GET'] = 'api/categoryproduct';
 $route['product/category']['POST'] = 'api/categoryproduct';
 $route['product/category/(:num)']['DELETE'] = 'api/categoryproduct/$1';
 $route['product/category/(:num)']['PUT'] = 'api/categoryproduct/$1';
+
+$route['api/products'] = '403_override';
+$route['product']['GET'] = 'api/products';
+$route['product']['POST'] = 'api/products';
+$route['product/(:num)']['DELETE'] = 'api/products/$1';
+$route['product/(:num)']['PUT'] = 'api/products/$1';
+
+$route['api/products/publish'] = '403_override';
+$route['api/products/unpublish'] = '403_override';
+$route['api/products/sold'] = '403_override';
+
+$route['product/publish/(:num)']['PUT'] = 'api/products/publish/$1';
+$route['product/unpublish/(:num)']['PUT'] = 'api/products/unpublish/$1';
+$route['product/sold/(:num)']['PUT'] = 'api/products/sold/$1';

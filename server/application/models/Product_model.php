@@ -3,9 +3,33 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Product_model extends CI_Model
 {
-    public function get_product_all()
+    public function get_product_all($status = null, $name = null, $category_name = null)
     {
-        $product = $this->db->query("SELECT * FROM vw_products")->return_array();
+
+        $string_query = "SELECT * FROM vw_products";
+
+        if ($status) {
+            $string_query = $string_query . "  WHERE product_status = $status";
+
+            if ($name) {
+                $string_query =  $string_query . " AND product_name LIKE '%$name%'";
+            }
+            if ($category_name) {
+                $string_query =  $string_query . " AND category_name LIKE '%$category_name%'";
+            }
+        } elseif ($name) {
+            $string_query =  $string_query . " WHERE product_name LIKE '%$name%'";
+            if ($category_name) {
+                $string_query =  $string_query . " AND category_name LIKE '%$category_name%'";
+            }
+        } elseif ($category_name) {
+            $string_query =  $string_query . " WHERE category_name LIKE '%$category_name%'";
+        }
+
+        // var_dump($string_query);
+        // die;
+
+        $product = $this->db->query($string_query)->result_array();
         if ($product) {
             for ($i = 0; $i < count($product); $i++) {
                 $product[$i]['product_pictures'] = explode(", ", $product[$i]['product_pictures']);
@@ -136,6 +160,35 @@ class Product_model extends CI_Model
                 $this->db->trans_commit();
                 return $affected_row;
             }
+        }
+    }
+
+    public function update_status_product($id, $new_status)
+    {
+        switch ($new_status) {
+            case 'unpublish':
+                $new_status = 0;
+                break;
+            case 'publish':
+                $new_status = 1;
+                break;
+            case 'sold':
+                $new_status = 2;
+                break;
+            default:
+                return false;
+                break;
+        }
+        $query = "UPDATE products SET product_status = $new_status WHERE id = $id";
+        $this->db->trans_begin();
+        if (!$this->db->simple_query($query)) {
+            $error = $this->db->error();
+            $this->db->trans_rollback();
+            return $error;
+        } else {
+            $affected_row = $this->db->affected_rows();
+            $this->db->trans_commit();
+            return $affected_row;
         }
     }
 }
