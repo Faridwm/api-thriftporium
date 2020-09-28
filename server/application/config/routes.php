@@ -101,3 +101,11 @@ $route['api/products/sold'] = '403_override';
 $route['product/publish/(:num)']['PUT'] = 'api/products/publish/$1';
 $route['product/unpublish/(:num)']['PUT'] = 'api/products/unpublish/$1';
 $route['product/sold/(:num)']['PUT'] = 'api/products/sold/$1';
+
+// province routes
+$route['api/province'] = '403_override';
+$route['province']['GET'] = 'api/province';
+
+// city routes
+// $route['api/city'] = '403_override';
+$route['province/city']['GET'] = 'api/city';

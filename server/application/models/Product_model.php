@@ -53,7 +53,7 @@ class Product_model extends CI_Model
 
     public function get_product_by_name($name)
     {
-        $product = $this->db->query("SELECT * FROM vw_products WHERE product_name LIKE '%$name%'")->return_array();
+        $product = $this->db->query("SELECT * FROM vw_products WHERE product_name LIKE '%$name%'")->result_array();
         if ($product) {
             for ($i = 0; $i < count($product); $i++) {
                 $product[$i]['product_pictures'] = explode(", ", $product[$i]['product_pictures']);
@@ -66,7 +66,7 @@ class Product_model extends CI_Model
 
     public function get_product_by_category_name($category_name)
     {
-        $product = $this->db->query("SELECT * FROM vw_products category_name LIKE '%$category_name%'")->return_array();
+        $product = $this->db->query("SELECT * FROM vw_products category_name LIKE '%$category_name%'")->result_array();
         if ($product) {
             for ($i = 0; $i < count($product); $i++) {
                 $product[$i]['product_pictures'] = explode(", ", $product[$i]['product_pictures']);
