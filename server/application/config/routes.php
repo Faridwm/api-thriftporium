@@ -88,11 +88,11 @@ $route['user/cart']['DELETE'] = 'api/cart';
 $route['user/cart']['PUT'] = 'api/cart';
 
 // product routes
-$route['api/categoryproduct'] = '403_override';
-$route['product/category']['GET'] = 'api/categoryproduct';
-$route['product/category']['POST'] = 'api/categoryproduct';
-$route['product/category/(:num)']['DELETE'] = 'api/categoryproduct/$1';
-$route['product/category/(:num)']['PUT'] = 'api/categoryproduct/$1';
+$route['api/categoryProduct'] = '403_override';
+$route['product/category']['GET'] = 'api/categoryProduct';
+$route['product/category']['POST'] = 'api/categoryProduct';
+$route['product/category/(:num)']['DELETE'] = 'api/categoryProduct/$1';
+$route['product/category/(:num)']['PUT'] = 'api/categoryProduct/$1';
 
 $route['api/products'] = '403_override';
 $route['product']['GET'] = 'api/products';
