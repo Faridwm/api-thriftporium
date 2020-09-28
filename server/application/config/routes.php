@@ -107,5 +107,5 @@ $route['api/province'] = '403_override';
 $route['province']['GET'] = 'api/province';
 
 // city routes
-// $route['api/city'] = '403_override';
+$route['api/city'] = '403_override';
 $route['province/city']['GET'] = 'api/city';

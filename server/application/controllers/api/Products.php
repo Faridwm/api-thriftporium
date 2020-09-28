@@ -103,7 +103,7 @@ class Products extends REST_Controller
                     "maxLength" => 255
                 ],
                 "stock" => (object) [
-                    "type" => 'ineteger'
+                    "type" => 'integer'
                 ],
                 "category_id" => (object) [
                     "type" => "integer"
@@ -182,10 +182,65 @@ class Products extends REST_Controller
         }
     }
 
+    private function update_product_validation($json_data)
+    {
+        $validate = new Validator();
+
+        $schema = (object) [
+            "type" => "object",
+            "properties" => (object) [
+                "name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 100
+                ],
+                "description" => (object) [
+                    "type" => "string",
+                    "maxLength" => 255
+                ],
+                "stock" => (object) [
+                    "type" => 'integer'
+                ],
+                "avaibility" => (object) [
+                    "type" => 'integer'
+                ],
+                "category_id" => (object) [
+                    "type" => "integer"
+                ],
+                "price" => (object) [
+                    "type" => 'integer'
+                ],
+                "pictures" => (object) [
+                    "type" => "array",
+                    "minItems" => 1,
+                    "maxItems" => 7,
+                    "uniqueItems" => true,
+                    "items" => (object) [
+                        "type" => "string",
+                        "maxLength" => 255
+                    ]
+                ]
+            ],
+            "required" => ["name", "description", "stock", "avaibility", "category_id", "price", "pictures"],
+            "additionalProperties" => false
+        ];
+
+        $validation = $validate->dataValidation((object) $json_data, $schema);
+        if (!$validation->isValid()) {
+            $api['code'] = 400;
+            $api['status'] = false;
+            $api['error'] = $validation->getFirstError()->keyword();
+            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
+            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            return true;
+        }
+    }
+
     public function index_put($id)
     {
         $data = $this->put();
-        if ($this->product_validation($data)) {
+        if ($this->update_product_validation($data)) {
             $data["id"] = (int) $id;
             $result = $this->Product_model->update_product($data);
             if ($result === 1) {
@@ -219,9 +274,9 @@ class Products extends REST_Controller
         if ($result === 1) {
             $api['code'] = 200;
             $api['status'] = true;
-            $api['message'] = "Product has been updated";
+            $api['message'] = "Product has been unpublished";
             $this->response($api, REST_Controller::HTTP_OK);
-        } elseif ($result === 0) {
+        } elseif ($result === 0 && $this->Product_model->get_product_by_id((int) $id)) {
             $api['code'] = 304;
             $api['status'] = false;
             $api['message'] = "Product has not modified";
@@ -246,9 +301,9 @@ class Products extends REST_Controller
         if ($result === 1) {
             $api['code'] = 200;
             $api['status'] = true;
-            $api['message'] = "Product has been updated";
+            $api['message'] = "Product has been published";
             $this->response($api, REST_Controller::HTTP_OK);
-        } elseif ($result === 0) {
+        } elseif ($result === 0 && $this->Product_model->get_product_by_id((int) $id)) {
             $api['code'] = 304;
             $api['status'] = false;
             $api['message'] = "Product has not modified";
@@ -273,9 +328,9 @@ class Products extends REST_Controller
         if ($result === 1) {
             $api['code'] = 200;
             $api['status'] = true;
-            $api['message'] = "Product has been updated";
+            $api['message'] = "Product has been sold";
             $this->response($api, REST_Controller::HTTP_OK);
-        } elseif ($result === 0) {
+        } elseif ($result === 0 && $this->Product_model->get_product_by_id((int) $id)) {
             $api['code'] = 304;
             $api['status'] = false;
             $api['message'] = "Product has not modified";

@@ -90,14 +90,14 @@ class Product_model extends CI_Model
 
         $uuid = $this->db->query("SELECT uuid_short()")->row_array()["uuid_short()"];
 
-        $query_insert = "INSERT INTO products(id, product_id, product_name, product_description, product_stock, produck_avaibility, product_price, product_category) VALUES ($uuid, product_id(), '$name', '$description', $stock, $stock, $price, $category_id)";
+        $query_insert = "INSERT INTO products(id, product_id, product_name, product_description, product_stock, product_avaibility, product_price, product_category) VALUES ($uuid, product_id(), '$name', '$description', $stock, $stock, $price, $category_id)";
         if (!$this->db->simple_query($query_insert)) {
             $error = $this->db->error();
             $this->db->trans_rollback();
             return $error;
         } else {
             for ($i = 0; $i < count($pictures); $i++) {
-                $query_insert_picture = "INSERT INTO product_pictures(product_id, picture) VALUES($uuid, '$pictures[$i]')";
+                $query_insert_picture = "INSERT INTO product_pictures(id, product_id, picture) VALUES(pp_id(), $uuid, '$pictures[$i]')";
                 if (!$this->db->simple_query($query_insert_picture)) {
                     $error = $this->db->error();
                     $this->db->trans_rollback();
@@ -131,6 +131,7 @@ class Product_model extends CI_Model
         $name = $product_data['name'];
         $description = $product_data['description'];
         $stock = $product_data['stock'];
+        $avaibility = $product_data['avaibility'];
         $category_id = $product_data['category_id'];
         $price = $product_data['price'];
         $pictures = $product_data['pictures'];
@@ -142,14 +143,14 @@ class Product_model extends CI_Model
             $this->db->trans_rollback();
             return $error;
         } else {
-            $query_update = "UPDATE products SET product_name = '$name', product_description = '$description', product_stock = '$stock', product_price = '$price', product_category = $category_id WHERE id = $id";
+            $query_update = "UPDATE products SET product_name = '$name', product_description = '$description', product_stock = '$stock', product_avaibility = $avaibility, product_price = '$price', product_category = $category_id, modified_at = NOW() WHERE id = $id";
             if (!$this->db->simple_query($query_update)) {
                 $error = $this->db->error();
                 $this->db->trans_rollback();
                 return $error;
             } else {
                 for ($i = 0; $i < count($pictures); $i++) {
-                    $query_insert_picture = "INSERT INTO product_pictures(product_id, picture) VALUES($id, '$pictures[$i]')";
+                    $query_insert_picture = "INSERT INTO product_pictures(id, product_id, picture) VALUES(pp_id(), $id, '$pictures[$i]')";
                     if (!$this->db->simple_query($query_insert_picture)) {
                         $error = $this->db->error();
                         $this->db->trans_rollback();
