@@ -120,3 +120,10 @@ $route['province/city']['GET'] = 'api/city';
 $route['api/company'] = '403_override';
 $route['company']['GET'] = 'api/company';
 $route['company/(:num)']['PUT'] = 'api/company/$1';
+
+// courier routes
+$route['api/courier'] = '403_override';
+$route['courier']['GET'] = 'api/courier';
+$route['courier']['POST'] = 'api/courier';
+$route['courier/(:num)']['DELETE'] = 'api/courier/$1';
+$route['courier/(:num)']['PUT'] = 'api/courier/$1';
