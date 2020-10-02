@@ -79,6 +79,12 @@ class Order_model extends CI_Model
             for ($i = 0; $i <  count($products); $i++) {
                 $product_id = $products[$i]["id"];
                 $product_qty = $products[$i]["qty"];
+
+                // remove from cart if exists
+                $remove_cart = "DELETE FROM carts WHERE user_id = $user AND product_id = $product_id";
+                $this->db->simple_query($remove_cart);
+
+                // check avaibility
                 $avaibility = $this->db->query("SELECT check_avaibility($product_id, $product_qty) AS `check`")->row_array()["check"];
                 if ($avaibility === 1) {
                     $query_insert_op = "INSERT INTO order_product VALUES ($order_uuid, $product_id, $product_qty)";
