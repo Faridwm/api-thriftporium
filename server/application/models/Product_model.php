@@ -8,7 +8,7 @@ class Product_model extends CI_Model
 
         $string_query = "SELECT * FROM vw_products";
 
-        if ($status) {
+        if ($status !== null) {
             $string_query = $string_query . "  WHERE product_status = $status";
 
             if ($name) {

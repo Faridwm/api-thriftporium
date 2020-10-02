@@ -127,3 +127,12 @@ $route['courier']['GET'] = 'api/courier';
 $route['courier']['POST'] = 'api/courier';
 $route['courier/(:num)']['DELETE'] = 'api/courier/$1';
 $route['courier/(:num)']['PUT'] = 'api/courier/$1';
+
+// order routes
+$route['api/order'] = '403_override';
+$route['api/order/topayment'] = '403_override';
+$route['api/order/canceled'] = '403_override';
+$route['order']['GET'] = 'api/order';
+$route['order']['POST'] = 'api/order';
+$route['order/topayment/(:num)']['PUT'] = 'api/order/topayment/$1';
+$route['order/canceled/(:num)']['PUT'] = 'api/order/canceled/$1';
