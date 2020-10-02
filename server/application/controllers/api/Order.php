@@ -126,8 +126,7 @@ class Order extends REST_Controller
                 ],
                 "products" => (object) [
                     "type" => "array",
-                    "minItems" => 1,
-                    "uniqueItems" => true
+                    "minItems" => 1
                 ]
             ],
             "required" => ["user", "street", "city", "zipcode", "shipping_courier", "shipping_price", "products"],
@@ -143,18 +142,20 @@ class Order extends REST_Controller
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
+            // var_dump($json_data["products"]);
+            // die;
             for ($i = 0; $i < count($json_data["products"]); $i++) {
                 $schema_product = (object) [
                     "type" => "object",
                     "properties" => (object) [
-                        "prodcut_id" => (object) [
+                        "product_id" => (object) [
                             "type" => "integer"
                         ],
                         "qty" => (object) [
                             "type" => "integer"
                         ]
                     ],
-                    "required" => ["prodcut_id", "qty"],
+                    "required" => ["product_id", "qty"],
                     "additionalProperties" => false
                 ];
 
@@ -177,12 +178,17 @@ class Order extends REST_Controller
         $data = $this->post();
 
         if ($this->order_validation($data)) {
-            $result = $this->Product_model->add_product($data);
+            $result = $this->Order_model->make_order($data);
             if ($result === 1) {
                 $api['code'] = 200;
                 $api['status'] = true;
                 $api['message'] = "Order has been created";
                 $this->response($api, REST_Controller::HTTP_OK);
+            } elseif ($result === -1) {
+                $api['code'] = 400;
+                $api['status'] = false;
+                $api['message'] = "Order gagal, Produk habis";
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } else {
                 $api['code'] = 500;
                 $api['status'] = false;

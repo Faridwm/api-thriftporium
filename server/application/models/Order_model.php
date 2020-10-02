@@ -23,9 +23,27 @@ class Order_model extends CI_Model
         // var_dump($query);
         // die;
 
-        $order = $this->db->query($query);
+        $order = $this->db->query($query)->result_array();
 
         if ($order) {
+            // $order["total_price"] = 0;
+            for ($i = 0; $i < count($order); $i++) {
+                $order[$i]["total_price"] = 0;
+                $order[$i]["products"] = explode(", ", $order[$i]['products']);
+
+                for ($j = 0; $j < count($order[$i]['products']); $j++) {
+                    $p_id = $order[$i]['products'][$j];
+                    $product_detail = $this->db->query("SELECT * FROM vw_product_picture WHERE product_id = $p_id")->row_array();
+                    // var_dump($product_detail);
+                    // die;
+                    if ($product_detail) {
+                        $order[$i]["total_price"] =  $order[$i]["total_price"] + $product_detail['product_price'];
+                        $order[$i]['products'][$j] = $product_detail;
+                    } else {
+                        return false;
+                    }
+                }
+            }
             return $order;
         } else {
             return false;
@@ -59,6 +77,8 @@ class Order_model extends CI_Model
 
     public function make_order($order_data)
     {
+        // var_dump($order_data);
+        // die;
         $user = $order_data["user"];
         $street = $order_data["street"];
         $city = $order_data["city"];
@@ -77,7 +97,7 @@ class Order_model extends CI_Model
             return $error;
         } else {
             for ($i = 0; $i <  count($products); $i++) {
-                $product_id = $products[$i]["id"];
+                $product_id = $products[$i]["product_id"];
                 $product_qty = $products[$i]["qty"];
 
                 // remove from cart if exists
@@ -98,7 +118,7 @@ class Order_model extends CI_Model
                     }
                 } else {
                     $this->db->trans_rollback();
-                    $error = "pokonya barang abis";
+                    $error = -1;
                     return $error;
                     break;
                 }
