@@ -143,3 +143,17 @@ $route['payment/account']['GET'] = 'api/payaccount';
 $route['payment/account']['POST'] = 'api/payaccount';
 $route['payment/account/(:num)']['DELETE'] = 'api/payaccount/$1';
 $route['payment/account/(:num)']['PUT'] = 'api/payaccount/$1';
+
+$route['api/payment'] = '403_override';
+$route['api/payment/bank'] = '403_override';
+$route['api/payment/canceled'] = '403_override';
+$route['api/payment/receipt'] = '403_override';
+$route['api/payment/transfer'] = '403_override';
+$route['api/payment/verified'] = '403_override';
+$route['payment']['GET'] = 'api/payment';
+$route['payment']['POST'] = 'api/payment';
+$route['payment/bank']['PUT'] = 'api/payment/bank';
+$route['payment/canceled']['PUT'] = 'api/payment/canceled';
+$route['payment/receipt']['PUT'] = 'api/payment/receipt';
+$route['payment/transfer']['PUT'] = 'api/payment/transfer';
+$route['payment/verified']['PUT'] = 'api/payment/verified';
