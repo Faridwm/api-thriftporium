@@ -136,3 +136,10 @@ $route['order']['GET'] = 'api/order';
 $route['order']['POST'] = 'api/order';
 $route['order/topayment/(:num)']['PUT'] = 'api/order/topayment/$1';
 $route['order/canceled/(:num)']['PUT'] = 'api/order/canceled/$1';
+
+// payment routes
+$route['api/payaccount'] = '403_override';
+$route['payment/account']['GET'] = 'api/payaccount';
+$route['payment/account']['POST'] = 'api/payaccount';
+$route['payment/account/(:num)']['DELETE'] = 'api/payaccount/$1';
+$route['payment/account/(:num)']['PUT'] = 'api/payaccount/$1';
