@@ -43,6 +43,8 @@ class Order_model extends CI_Model
                         return false;
                     }
                 }
+
+                $order[$i]["total_price"] += $order[$i]["shipping_price"];
             }
             return $order;
         } else {
