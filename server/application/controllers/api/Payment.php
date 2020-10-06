@@ -25,7 +25,7 @@ class Payment extends REST_Controller
         parse_str($_SERVER["QUERY_STRING"], $query_array);
 
         if (count($query_array) === 0) {
-            $payment = $this->Payment_model->get_order();
+            $payment = $this->Payment_model->get_payment();
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 2) {
@@ -43,7 +43,7 @@ class Payment extends REST_Controller
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
                     }
-                    $payment = $this->Payment_model->get_order($query_array["id"], null, null, null);
+                    $payment = $this->Payment_model->get_payment($query_array["id"], null, null, null);
                     break;
                 case 'user' or 'status' or 'order':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
@@ -74,7 +74,7 @@ class Payment extends REST_Controller
                             break;
                     }
 
-                    $payment = $this->Payment_model->get_order(null, $user, $order, $status);
+                    $payment = $this->Payment_model->get_payment(null, $user, $order, $status);
                     break;
                 default:
                     $api['code'] = 400;
