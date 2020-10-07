@@ -85,6 +85,8 @@ class Order_model extends CI_Model
         $street = $order_data["street"];
         $city = $order_data["city"];
         $zipcode = $order_data["zipcode"];
+        $shipping_receiver = $order_data["shipping_receiver"];
+        $shipping_phone = $order_data["shipping_phone"];
         $shipping_courier = $order_data["shipping_courier"];
         $shipping_price = $order_data["shipping_price"];
         $products = $order_data["products"];
@@ -92,7 +94,7 @@ class Order_model extends CI_Model
         $this->db->trans_begin();
 
         $order_uuid = $this->db->query("SELECT uuid_short()")->row_array()["uuid_short()"];
-        $query_insert_order = "INSERT INTO orders(id, order_number, user_id, destination_street, destination_city, destination_zipcode, shipping_courier, shipping_price) VALUES ($order_uuid, order_num(), $user, '$street', $city, '$zipcode', $shipping_courier, $shipping_price)";
+        $query_insert_order = "INSERT INTO orders(id, order_number, user_id, destination_receiver, destination_phone, destination_street, destination_city, destination_zipcode, shipping_courier, shipping_price) VALUES ($order_uuid, order_num(), $user, '$shipping_receiver', '$shipping_phone', '$street', $city, '$zipcode', $shipping_courier, $shipping_price)";
         if (!$this->db->simple_query($query_insert_order)) {
             $error = $this->db->error();
             $this->db->trans_rollback();

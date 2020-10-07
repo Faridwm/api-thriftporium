@@ -118,6 +118,12 @@ class Order extends REST_Controller
                     "type" => "string",
                     "maxLength" => 10
                 ],
+                "shipping_receiver" => (object) [
+                    "type" => 'integer'
+                ],
+                "shipping_phone" => (object) [
+                    "type" => 'integer'
+                ],
                 "shipping_courier" => (object) [
                     "type" => 'integer'
                 ],
@@ -129,7 +135,7 @@ class Order extends REST_Controller
                     "minItems" => 1
                 ]
             ],
-            "required" => ["user", "street", "city", "zipcode", "shipping_courier", "shipping_price", "products"],
+            "required" => ["user", "street", "city", "zipcode", "shipping_receiver", "shipping_phone", "shipping_courier", "shipping_price", "products"],
             "additionalProperties" => false
         ];
 
