@@ -119,10 +119,12 @@ class Order extends REST_Controller
                     "maxLength" => 10
                 ],
                 "shipping_receiver" => (object) [
-                    "type" => 'integer'
+                    "type" => "string",
+                    "maxLength" => 100
                 ],
                 "shipping_phone" => (object) [
-                    "type" => 'integer'
+                    "type" => "string",
+                    "maxLength" => 20
                 ],
                 "shipping_courier" => (object) [
                     "type" => 'integer'
