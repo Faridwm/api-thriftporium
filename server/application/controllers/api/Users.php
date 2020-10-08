@@ -38,6 +38,54 @@ class Users extends REST_Controller
         }
     }
 
+    public function index_get()
+    {
+        $users = null;
+
+        parse_str($_SERVER["QUERY_STRING"], $query_array);
+
+        if (count($query_array) === 0) {
+            $users = $this->Users_model->get_user_all();
+        } else {
+            $keys = array_keys($query_array);
+            if (count($keys) > 1) {
+                $error['status'] = 400;
+                $error['message'] = "invalid request in query string";
+                $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+            }
+            switch ($keys[0]) {
+                case 'id':
+                    $users = $this->Users_model->get_user_by_id((int) $query_array["id"]);
+                    break;
+                case 'email':
+                    $users = $this->Users_model->get_user_by_email($query_array["email"]);
+                    break;
+                case 'role_id':
+                    $users = $this->Users_model->get_user_by_role_id($query_array["role_id"]);
+                    break;
+                default:
+                    $api['code'] = 400;
+                    $api['status'] = false;
+                    $api['message'] = "invalid key";
+                    $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                    break;
+            }
+        }
+
+        if ($users) {
+            $api['code'] = 200;
+            $api['status'] = true;
+            $api['message'] = 'successful';
+            $api['users'] = $users;
+            $this->response($api, REST_Controller::HTTP_OK);
+        } else {
+            $api['code'] = 404;
+            $api['status'] = false;
+            $api['message'] = "user not found";
+            $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
     private function register_validation($json_data)
     {
         $validate = new Validator();
@@ -83,7 +131,7 @@ class Users extends REST_Controller
         }
     }
 
-    public function register_post()
+    public function index_post()
     {
         $data = $this->post();
         $data['role'] = 2001;
@@ -91,7 +139,7 @@ class Users extends REST_Controller
         if ($this->register_validation($data)) {
             // var_dump($data);
             // die;
-            $result = $this->Users_model->register_user($data);
+            $result = $this->Users_model->add_user($data);
             if ($result === 1) {
                 $api['code'] = 200;
                 $api['status'] = true;
@@ -245,7 +293,7 @@ class Users extends REST_Controller
         }
     }
 
-    public function detail_put($id)
+    public function index_put($id)
     {
         $data = $this->put();
         if ($this->detail_validation($data)) {
@@ -332,6 +380,36 @@ class Users extends REST_Controller
                 $api['detail'] = $result;
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
+        }
+    }
+
+    public function index_delete($id)
+    {
+        $result = $this->Users_model->delete_user($id);
+        if ($result === 1) {
+            $api['code'] = 200;
+            $api['status'] = true;
+            $api['message'] = 'successful';
+            $api['detail'] = 'user deleted';
+            $this->response($api, REST_Controller::HTTP_OK);
+        } elseif ($result === 0) {
+            $api['code'] = 304;
+            $api['status'] = false;
+            $api['message'] = 'failed';
+            $api['detail'] = 'user not deleted';
+            $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
+        } elseif (!$this->User_model->get_user_by_id((int) $id)) {
+            $api['code'] = 404;
+            $api['status'] = false;
+            $api['message'] = 'failed';
+            $api['detail'] = 'user not found';
+            $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+        } else {
+            $api['code'] = 500;
+            $api['status'] = false;
+            $api['message'] = 'failed';
+            $api['detail'] = $result;
+            $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

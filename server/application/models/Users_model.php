@@ -8,6 +8,26 @@ class Users_model extends CI_Model
         return $this->db->query("SELECT `id`, `role_id`, `role_name` FROM user_roles")->result_array();
     }
 
+    public function get_user_all()
+    {
+        return $this->db->query("SELECT * FROM vw_user_profile")->result_array();
+    }
+
+    public function get_user_by_id($id)
+    {
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE id = $id")->row_array();
+    }
+
+    public function get_user_by_email($email)
+    {
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE user_email = '$email'")->row_array();
+    }
+
+    public function get_user_by_role_id($role_id)
+    {
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE role_id = $role_id")->result_array();
+    }
+
     public function login($user_login)
     {
         $email = $user_login['email'];
@@ -33,6 +53,58 @@ class Users_model extends CI_Model
                 $error['message'] = 'Wrong password';
                 return $error;
             }
+        }
+    }
+
+    public function add_user($user_data)
+    {
+        $first_name = $user_data['first_name'];
+        $last_name = $user_data['last_name'];
+        $email = $user_data['email'];
+        $password = $user_data['password'];
+        $role = $user_data['role'];
+
+        $check_email = $this->db->query("SELECT 1 FROM users WHERE user_email = '$email'")->row_array();
+        // var_dump($check_email);
+        // die;
+
+        if ($check_email !== null) {
+            $error['code'] = 400;
+            $error['message'] = 'e-mail has been used';
+            return $error;
+        } else {
+            $role_id = $this->db->query("SELECT id FROM user_roles WHERE role_id = $role")->row_array()['id'];
+            // var_dump($role_id);
+            // die;
+            $query_insert = "INSERT INTO users(`id`, `user_id`, `user_email`, `user_password`, `user_role`, `user_firstname`, `user_lastname`) VALUES (uuid_short(), user_id(), '$email', '$password', $role_id, '$first_name', '$last_name')";
+            // var_dump($query_insert);
+            // die;
+
+            $this->db->trans_begin();
+            if (!$this->db->simple_query($query_insert)) {
+                $error = $this->db->error();
+                $this->db->trans_rollback();
+                return $error;
+            } else {
+                $affected_row = $this->db->affected_rows();
+                $this->db->trans_commit();
+                return $affected_row;
+            }
+        }
+    }
+
+    public function delete_user($user_id)
+    {
+        $query_delete = "UPADTE users SET user_status = 0 WHERE id = $user_id";
+        $this->db->trans_begin();
+        if (!$this->db->simple_query($query_delete)) {
+            $error = $this->db->error();
+            $this->db->trans_rollback();
+            return $error;
+        } else {
+            $affected_row = $this->db->affected_rows();
+            $this->db->trans_commit();
+            return $affected_row;
         }
     }
 
@@ -117,7 +189,7 @@ class Users_model extends CI_Model
     public function update_password($user_data)
     {
         $id = $user_data['id'];
-        $new_password = password_hash($user_data['new_password'], PASSWORD_DEFAULT);
+        $new_password = $user_data['new_password'];
         $old_password = $user_data['old_password'];
 
         $user = $this->db->query("SELECT user_password FROM users WHERE id = $id")->row_array();

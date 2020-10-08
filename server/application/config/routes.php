@@ -66,16 +66,20 @@ $route['api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/example/users/
 $route['api/users/roles'] = '403_override';
 $route['user/roles']['GET'] = 'api/users/roles';
 
-$route['api/users/register'] = '403_override';
-$route['user/register']['POST'] = 'api/users/register';
+// $route['api/users/register'] = '403_override';
+// $route['user/register']['POST'] = 'api/users/register';
+$route['api/users'] = '403_override';
+$route['user']['GET'] = 'api/users';
+$route['user']['POST'] = 'api/users';
+$route['user/(:num)']['PUT'] = 'api/users/$1';
 
 $route['api/users/login'] = '403_override';
 $route['user/login']['POST'] = 'api/users/login';
 
 $route['api/users/detail/(:num)'] = '403_override';
-$route['api/users/detail'] = '403_override';
+// $route['api/users/detail'] = '403_override';
 $route['user/details/(:num)']['GET'] = 'api/users/detail/$1';
-$route['user/details/(:num)']['PUT'] = 'api/users/detail/$1';
+// $route['user/details/(:num)']['PUT'] = 'api/users/detail/$1';
 
 $route['api/users/password/(:num)'] = '403_override';
 $route['api/users/password'] = '403_override';
