@@ -36,7 +36,7 @@ class Payment extends REST_Controller
             }
             switch ($keys[0]) {
                 case 'id':
-                    if ($keys[1]) {
+                    if (isset($keys[1])) {
                         $api['code'] = 400;
                         $api['status'] = false;
                         $api['message'] = "invalid key";

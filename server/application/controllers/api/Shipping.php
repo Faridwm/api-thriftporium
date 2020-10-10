@@ -25,7 +25,7 @@ class Shipping extends REST_Controller
         parse_str($_SERVER["QUERY_STRING"], $query_array);
 
         if (count($query_array) === 0) {
-            $shipping = $this->Shipping->get_shipping();
+            $shipping = $this->Shipping_model->get_shipping();
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 2) {
@@ -36,14 +36,14 @@ class Shipping extends REST_Controller
             }
             switch ($keys[0]) {
                 case 'id':
-                    if ($keys[1]) {
+                    if (isset($keys[1])) {
                         $api['code'] = 400;
                         $api['status'] = false;
                         $api['message'] = "invalid key";
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
                     }
-                    $shipping = $this->Shipping->get_shipping((int) $query_array["id"], null, null);
+                    $shipping = $this->Shipping_model->get_shipping((int) $query_array["id"], null, null);
                     break;
                 case 'user' or 'status' or 'order':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
@@ -73,7 +73,7 @@ class Shipping extends REST_Controller
                             break;
                     }
 
-                    $shipping = $this->Shipping->get_shipping(null, $user, $status);
+                    $shipping = $this->Shipping_model->get_shipping(null, $user, $status);
                     break;
                 default:
                     $api['code'] = 400;
