@@ -3,12 +3,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Order_model extends CI_Model
 {
-    public function get_order($order_id = null, $user = null, int $status = null)
+    public function get_order($order_id = null, $user = null, $order_num = null, int $status = null)
     {
         $query = "SELECT * FROM vw_order";
-        if ($user === null && $status === null && $order_id === null) {
+        if ($user === null && $status === null && $order_id === null && $order_num = null) {
             $query = $query;
-        } elseif ($order_id && (!$user) && (!$status)) {
+        } elseif ($order_id && $user === null && $status === null && $order_num === null) {
             $query = $query . " WHERE id = $order_id";
         } else {
             if ($status !== null) {
@@ -16,8 +16,16 @@ class Order_model extends CI_Model
                 if ($user) {
                     $query = $query . " AND user_id = $user";
                 }
-            } elseif ($user) {
+                if ($order_num) {
+                    $query = $query . " AND order_number LIKE '%$order_num%'";
+                }
+            } elseif ($user !== null) {
                 $query = $query . " WHERE user_id = $user";
+                if ($order_num) {
+                    $query = $query . " AND order_number LIKE '%$order_num%'";
+                }
+            } elseif ($order_num === null) {
+                $query = $query . " WHERE order_number LIKE '%$order_num%'";
             }
         }
         // var_dump($query);

@@ -28,7 +28,7 @@ class Order extends REST_Controller
             $order = $this->Order_model->get_order();
         } else {
             $keys = array_keys($query_array);
-            if (count($keys) > 2) {
+            if (count($keys) > 3) {
                 $api['code'] = 400;
                 $api['status'] = false;
                 $api['message'] = "invalid request in query string";
@@ -43,11 +43,12 @@ class Order extends REST_Controller
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
                     }
-                    $order = $this->Order_model->get_order($query_array["id"], null, null);
+                    $order = $this->Order_model->get_order($query_array["id"], null, null, null);
                     break;
-                case 'user' or 'status':
+                case 'user' or 'status' or 'order_number':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
                     $user = (isset($query_array["user"])) ? $query_array["user"] : null;
+                    $order_number = (isset($query_array["order_number"])) ? $query_array["order_number"] : null;
 
                     switch ($status) {
                         case null:
@@ -73,7 +74,7 @@ class Order extends REST_Controller
                             break;
                     }
 
-                    $order = $this->Order_model->get_order(null, $user, $status);
+                    $order = $this->Order_model->get_order(null, $user, $order_number, $status);
                     break;
                 default:
                     $api['code'] = 400;
