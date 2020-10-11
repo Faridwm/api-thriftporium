@@ -15,17 +15,22 @@ class Users_model extends CI_Model
 
     public function get_user_by_id($id)
     {
-        return $this->db->query("SELECT * FROM vw_user_profile WHERE id = $id")->row_array();
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE id = $id")->result_array();
     }
 
     public function get_user_by_email($email)
     {
-        return $this->db->query("SELECT * FROM vw_user_profile WHERE user_email = '$email'")->row_array();
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE user_email = '$email'")->result_array();
     }
 
     public function get_user_by_role_id($role_id)
     {
         return $this->db->query("SELECT * FROM vw_user_profile WHERE role_id = $role_id")->result_array();
+    }
+
+    public function get_user_by_sosmed($uid, $provider)
+    {
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE uid = '$uid' AND $provider = '$provider'")->row_array();
     }
 
     public function login($user_login)
@@ -93,9 +98,65 @@ class Users_model extends CI_Model
         }
     }
 
+    public function add_user_with_sosmed($user_data)
+    {
+        $first_name = $user_data['first_name'];
+        $last_name = $user_data['last_name'];
+        $email = $user_data['email'];
+        $uid = $user_data['uid'];
+        $provider = $user_data['provider'];
+        $role = $user_data['role'];
+
+        if ($role !== 2001) {
+            return -1;
+        }
+
+        $this->db->trans_begin();
+        $role_id = $this->db->query("SELECT id FROM user_roles WHERE role_id = $role")->row_array()['id'];
+        $check_provider = $this->db->query("SELECT 1 FROM sosmed_provider WHERE uid = '$uid' AND provider = '$provider'")->row_array();
+
+        if ($check_provider === null) {
+            $check_id = $this->db->query("SELECT id FROM users WHERE user_email = '$email'")->row_array();
+            if ($check_id === null) {
+                $uuid = $this->db->query("uuid_short()")->row_array()["uuid_short()"];
+                $insert_users = "INSERT INTO users(id, user_id, user_email, user_role, user_firstname, user_lastname) VALUES ($uuid, user_id(), '$email', $role_id, '$first_name', '$last_name')";
+                $insert_provider = "INSERT INTO sosmed_provider VALUES ('$uid', $uuid, '$provider', NOW())";
+
+                if (!$this->db->simple_query($insert_users)) {
+                    $error = $this->db->error();
+                    $this->db->trans_rollback();
+                    return $error;
+                } else {
+                    if (!$this->db->simple_query($insert_provider)) {
+                        $error = $this->db->error();
+                        $this->db->trans_rollback();
+                        return $error;
+                    }
+                    $affected_row = $this->db->affected_rows();
+                    $this->db->trans_commit();
+                    return $affected_row;
+                }
+            } else {
+                $user_uuid = $check_id["id"];
+                $insert_provider = "INSERT INTO sosmed_provider VALUES ('$uid', $user_uuid, '$provider', NOW())";
+                if (!$this->db->simple_query($insert_provider)) {
+                    $error = $this->db->error();
+                    $this->db->trans_rollback();
+                    return $error;
+                } else {
+                    $affected_row = $this->db->affected_rows();
+                    $this->db->trans_commit();
+                    return $affected_row;
+                }
+            }
+        } else {
+            return -2;
+        }
+    }
+
     public function delete_user($user_id)
     {
-        $query_delete = "UPADTE users SET user_status = 0 WHERE id = $user_id";
+        $query_delete = "UPDATE users SET user_status = 0 WHERE id = $user_id";
         $this->db->trans_begin();
         if (!$this->db->simple_query($query_delete)) {
             $error = $this->db->error();

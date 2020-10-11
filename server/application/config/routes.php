@@ -72,6 +72,9 @@ $route['api/users'] = '403_override';
 $route['user']['GET'] = 'api/users';
 $route['user']['POST'] = 'api/users';
 $route['user/(:num)']['PUT'] = 'api/users/$1';
+$route['user/(:num)']['DELETE'] = 'api/users/$1';
+
+$route['user/socmed']['POST'] = 'api/users/socmed';
 
 $route['api/users/login'] = '403_override';
 $route['user/login']['POST'] = 'api/users/login';

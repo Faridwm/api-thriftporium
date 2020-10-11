@@ -48,20 +48,58 @@ class Users extends REST_Controller
             $users = $this->Users_model->get_user_all();
         } else {
             $keys = array_keys($query_array);
-            if (count($keys) > 1) {
+            if (count($keys) > 2) {
                 $error['status'] = 400;
                 $error['message'] = "invalid request in query string";
                 $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
+                    if (isset($keys[1])) {
+                        $api['code'] = 400;
+                        $api['status'] = false;
+                        $api['message'] = "invalid key";
+                        $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                    }
                     $users = $this->Users_model->get_user_by_id((int) $query_array["id"]);
                     break;
                 case 'email':
+                    if (isset($keys[1])) {
+                        $api['code'] = 400;
+                        $api['status'] = false;
+                        $api['message'] = "invalid key";
+                        $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                    }
                     $users = $this->Users_model->get_user_by_email($query_array["email"]);
                     break;
                 case 'role_id':
+                    if (isset($keys[1])) {
+                        $api['code'] = 400;
+                        $api['status'] = false;
+                        $api['message'] = "invalid key";
+                        $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                    }
                     $users = $this->Users_model->get_user_by_role_id($query_array["role_id"]);
+                    break;
+                case 'uid':
+                    if ($keys[1] === 'provider') {
+                        $users = $this->Users_model->get_user_by_sosmed($query_array["uid"], $query_array["provider"]);
+                    } else {
+                        $api['code'] = 400;
+                        $api['status'] = false;
+                        $api['message'] = "invalid key";
+                        $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                    }
+                    break;
+                case 'provider':
+                    if ($keys[1] === 'uid') {
+                        $users = $this->Users_model->get_user_by_sosmed($query_array["uid"], $query_array["provider"]);
+                    } else {
+                        $api['code'] = 400;
+                        $api['status'] = false;
+                        $api['message'] = "invalid key";
+                        $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                    }
                     break;
                 default:
                     $api['code'] = 400;
@@ -398,7 +436,7 @@ class Users extends REST_Controller
             $api['message'] = 'failed';
             $api['detail'] = 'user not deleted';
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
-        } elseif (!$this->User_model->get_user_by_id((int) $id)) {
+        } elseif (!$this->Users_model->get_user_by_id((int) $id)) {
             $api['code'] = 404;
             $api['status'] = false;
             $api['message'] = 'failed';
@@ -410,6 +448,82 @@ class Users extends REST_Controller
             $api['message'] = 'failed';
             $api['detail'] = $result;
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function socmed_post()
+    {
+        $data = $this->post();
+
+        $validate = new Validator();
+
+        $schema = (object) [
+            "type" => "object",
+            "properties" => (object) [
+                "first_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 45
+                ],
+                "last_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 45
+                ],
+                "email" => (object) [
+                    "type" => 'string',
+                    "format" => 'email',
+                    "maxLength" => 100
+                ],
+                "uid" => (object) [
+                    "type" => "string",
+                    "maxLength" => 100
+                ],
+                "provider" => (object) [
+                    "type" => "string",
+                    "maxLength" => 20
+                ],
+                "role" => (object) [
+                    "type" => 'integer'
+                ]
+            ],
+            "required" => ["first_name", "last_name", "email", "uid", "provider", "role"],
+            "additionalProperties" => false
+        ];
+
+        $validation = $validate->dataValidation((object) $data, $schema);
+        if (!$validation->isValid()) {
+            $api['code'] = 400;
+            $api['status'] = false;
+            $api['error'] = $validation->getFirstError()->keyword();
+            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
+            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            $result = $this->Users_model->add_user_with_sosmed($data);
+            if ($result >= 1) {
+                $api['code'] = 200;
+                $api['status'] = true;
+                $api['message'] = 'successful';
+                $api['detail'] = 'user sosmed has been created';
+                $this->response($api, REST_Controller::HTTP_OK);
+            } elseif ($result === -1) {
+                $api['code'] = 400;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = "cannot register sosmed, because it's not user";
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+            } elseif ($result === -2) {
+                $api['code'] = 400;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = "cannot register sosmed, because sosmed has already register";
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+            } else {
+                $api['code'] = 500;
+                $api['status'] = false;
+                $api['message'] = 'failed';
+                $api['detail'] = $result;
+                $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
     }
 }
