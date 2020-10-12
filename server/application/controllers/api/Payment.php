@@ -45,7 +45,9 @@ class Payment extends REST_Controller
                     }
                     $payment = $this->Payment_model->get_payment($query_array["id"], null, null, null);
                     break;
-                case 'user' or 'status' or 'order':
+                case 'user':
+                case 'status':
+                case 'order':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
                     $user = (isset($query_array["user"])) ? $query_array["user"] : null;
                     $order = (isset($query_array["order"])) ? $query_array["order"] : null;

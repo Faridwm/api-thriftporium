@@ -45,7 +45,9 @@ class Order extends REST_Controller
                     }
                     $order = $this->Order_model->get_order($query_array["id"], null, null, null);
                     break;
-                case 'user' or 'status' or 'order_number':
+                case 'user':
+                case 'status':
+                case 'order_number':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
                     $user = (isset($query_array["user"])) ? $query_array["user"] : null;
                     $order_number = (isset($query_array["order_number"])) ? $query_array["order_number"] : null;

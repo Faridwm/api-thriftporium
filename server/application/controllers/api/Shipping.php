@@ -45,7 +45,9 @@ class Shipping extends REST_Controller
                     }
                     $shipping = $this->Shipping_model->get_shipping((int) $query_array["id"], null, null);
                     break;
-                case 'user' or 'status' or 'order':
+                case 'user':
+                case 'status':
+                case 'order':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
                     $user = (isset($query_array["user"])) ? $query_array["user"] : null;
 

@@ -31,10 +31,12 @@ class Products extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             switch ($keys[0]) {
-                case 'status' or 'category' or 'name':
+                case 'status':
+                case 'category':
+                case 'name':
                     $status = (isset($query_array["status"])) ? $query_array["status"] : null;
-                    $name = (isset($query_array["name"])) ? $query_array["name"] : null;
                     $category_name = (isset($query_array["category"])) ? $query_array["category"] : null;
+                    $name = (isset($query_array["name"])) ? $query_array["name"] : null;
                     // var_dump($status);
                     // var_dump($name);
                     // var_dump($category_name);
