@@ -202,7 +202,7 @@ class Products extends REST_Controller
                 "stock" => (object) [
                     "type" => 'integer'
                 ],
-                "avaibility" => (object) [
+                "availability" => (object) [
                     "type" => 'integer'
                 ],
                 "category_id" => (object) [
@@ -222,7 +222,7 @@ class Products extends REST_Controller
                     ]
                 ]
             ],
-            "required" => ["name", "description", "stock", "avaibility", "category_id", "price", "pictures"],
+            "required" => ["name", "description", "stock", "availability", "category_id", "price", "pictures"],
             "additionalProperties" => false
         ];
 
