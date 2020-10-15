@@ -25,7 +25,7 @@ class Company extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get company",
                 "data" => $company
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -33,8 +33,7 @@ class Company extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Company not found"
+                "message" => "Company not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -121,7 +120,7 @@ class Company extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update company",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -129,8 +128,7 @@ class Company extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "Company has not modified"
+                    "message" => "Company has not modified"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } else {

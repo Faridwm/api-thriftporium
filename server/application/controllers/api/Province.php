@@ -31,8 +31,7 @@ class Province extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -48,8 +47,7 @@ class Province extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -60,7 +58,7 @@ class Province extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get province",
                 "data" => $province
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -68,8 +66,7 @@ class Province extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Province not found"
+                "message" => "Province not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }

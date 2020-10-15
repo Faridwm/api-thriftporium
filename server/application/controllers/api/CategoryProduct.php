@@ -32,8 +32,7 @@ class CategoryProduct extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -48,8 +47,7 @@ class CategoryProduct extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -60,7 +58,7 @@ class CategoryProduct extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get category product",
                 "data" => $category_product
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -68,8 +66,7 @@ class CategoryProduct extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "category product not found"
+                "message" => "category product not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -120,7 +117,7 @@ class CategoryProduct extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful create category product",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -143,7 +140,7 @@ class CategoryProduct extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful delete category product",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -151,8 +148,7 @@ class CategoryProduct extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Category has not found"
+                "message" => "Category has not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -177,7 +173,7 @@ class CategoryProduct extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update category product",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -185,16 +181,14 @@ class CategoryProduct extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "Category has not modified"
+                    "message" => "Category has not modified"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->CategoryProduct_model->get_category_by_id((int) $id)) {
                 $api = [
                     "code" => 404,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "Category has not found"
+                    "message" => "Category has not found"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {

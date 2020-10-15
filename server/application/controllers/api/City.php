@@ -31,8 +31,7 @@ class City extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -54,8 +53,7 @@ class City extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -66,7 +64,7 @@ class City extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get city",
                 "data" => $city
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -74,8 +72,7 @@ class City extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "City not found"
+                "message" => "City not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }

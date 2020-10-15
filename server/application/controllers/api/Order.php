@@ -32,8 +32,7 @@ class Order extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -43,8 +42,7 @@ class Order extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
@@ -78,8 +76,7 @@ class Order extends REST_Controller
                             $api = [
                                 "code" => 400,
                                 "status" => false,
-                                "message" => "failed",
-                                "error_detail" => "invalid key"
+                                "message" => "invalid key"
                             ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
@@ -91,8 +88,7 @@ class Order extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -102,7 +98,7 @@ class Order extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get order",
                 "data" => $order
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -110,8 +106,7 @@ class Order extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "order not found"
+                "message" => "order not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -215,7 +210,7 @@ class Order extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful make order",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -223,8 +218,7 @@ class Order extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "Order gagal, Produk habis"
+                    "message" => "Order gagal, Produk habis"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } else {
@@ -247,7 +241,7 @@ class Order extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful update order status to payment",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -255,16 +249,14 @@ class Order extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Order status has not modified"
+                "message" => "Order status has not modified"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Order_model->get_order((int) $order_id, null, null)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Order has not found"
+                "message" => "Order has not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -286,7 +278,7 @@ class Order extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful update order status to canceled",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -294,16 +286,14 @@ class Order extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Order status has not modified"
+                "message" => "Order status has not modified"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Order_model->get_Order_by_id((int) $order_id, null, null)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Order has not found"
+                "message" => "Order has not found"
             ];
         } else {
             $api = [

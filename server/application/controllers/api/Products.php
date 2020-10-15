@@ -58,8 +58,7 @@ class Products extends REST_Controller
                             $api = [
                                 "code" => 400,
                                 "status" => false,
-                                "message" => "failed",
-                                "error_detail" => "invalid key"
+                                "message" => "invalid key"
                             ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
@@ -73,8 +72,7 @@ class Products extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -85,7 +83,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get product",
                 "data" => $product
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -93,8 +91,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product not found"
+                "message" => "product not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -164,7 +161,7 @@ class Products extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful add product",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -187,7 +184,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful delete product",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -195,8 +192,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product not found"
+                "message" => "product not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -277,7 +273,7 @@ class Products extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update product",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -285,16 +281,14 @@ class Products extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "product has not modified"
+                    "message" => "product has not modified"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
                 $api = [
                     "code" => 404,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "product not found"
+                    "message" => "product not found"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
@@ -316,7 +310,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful change product status to unpublish",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -324,16 +318,14 @@ class Products extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product has not modified"
+                "message" => "product has not modified"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product not found"
+                "message" => "product not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -354,7 +346,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful change product status to publish",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -362,16 +354,14 @@ class Products extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product has not modified"
+                "message" => "product has not modified"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product not found"
+                "message" => "product not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -392,7 +382,7 @@ class Products extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful change product status to sold",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -400,16 +390,14 @@ class Products extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product has not modified"
+                "message" => "product has not modified"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product not found"
+                "message" => "product not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {

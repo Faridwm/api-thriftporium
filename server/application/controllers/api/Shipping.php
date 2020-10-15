@@ -32,8 +32,7 @@ class Shipping extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -43,8 +42,7 @@ class Shipping extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
@@ -77,8 +75,7 @@ class Shipping extends REST_Controller
                             $api = [
                                 "code" => 400,
                                 "status" => false,
-                                "message" => "failed",
-                                "error_detail" => "invalid key"
+                                "message" => "invalid key"
                             ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
@@ -90,8 +87,7 @@ class Shipping extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -101,7 +97,7 @@ class Shipping extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get shipping",
                 "data" => $shipping
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -109,8 +105,7 @@ class Shipping extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "shipping not found"
+                "message" => "shipping not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -153,7 +148,7 @@ class Shipping extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful add shipping receipt",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -161,16 +156,14 @@ class Shipping extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "Shipping status has not modified"
+                    "message" => "Shipping status has not modified"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Shipping_model->get_shipping((int) $id)) {
                 $api = [
                     "code" => 404,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "shipping not found"
+                    "message" => "shipping not found"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
@@ -185,14 +178,14 @@ class Shipping extends REST_Controller
         }
     }
 
-    public function arribed_put($id)
+    public function arrived_put($id)
     {
         $result = $this->Shipping_model->arrive_shipping((int) $id);
         if ($result === 1) {
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful change shipping status to arrived",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -200,16 +193,14 @@ class Shipping extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "Shipping status has not modified"
+                "message" => "Shipping status has not modified"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Shipping_model->get_shipping((int) $id)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "shipping not found"
+                "message" => "shipping not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {

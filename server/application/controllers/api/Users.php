@@ -28,7 +28,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get user role",
                 "data" => $user_role
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -36,8 +36,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "role not found"
+                "message" => "role not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -57,8 +56,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -68,8 +66,7 @@ class Users extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -80,8 +77,7 @@ class Users extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -92,8 +88,7 @@ class Users extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -106,8 +101,7 @@ class Users extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -119,8 +113,7 @@ class Users extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -129,8 +122,7 @@ class Users extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -141,7 +133,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get user",
                 "data" => $users
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -149,8 +141,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "user not found"
+                "message" => "user not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -216,7 +207,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful create user",
                     "data" => null
                 ];
                 // $api['user'] = $message;
@@ -280,7 +271,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful login",
                     "data" =>  $result['login_data']
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -313,7 +304,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get user detail",
                 "data" => $user_detail
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -321,8 +312,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "user not found"
+                "message" => "user not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -396,7 +386,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update user detail",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -404,8 +394,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "profile not changed"
+                    "message" => "profile not changed"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } else {
@@ -465,7 +454,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update password",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -473,8 +462,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "password not changed"
+                    "message" => "password not changed"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } else {
@@ -496,7 +484,7 @@ class Users extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful delete user",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -504,16 +492,14 @@ class Users extends REST_Controller
             $api = [
                 "code" => 304,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "user not deleted"
+                "message" => "user not deleted"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Users_model->get_user_by_id((int) $id)) {
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "user not found"
+                "message" => "user not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -581,7 +567,7 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful create user with social media account",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -589,16 +575,14 @@ class Users extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "cannot register sosmed, because it's not user"
+                    "message" => "cannot register sosmed, because it's not user"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif ($result === -2) {
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "cannot register sosmed, because sosmed has already register"
+                    "message" => "cannot register sosmed, because sosmed has already register"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } else {

@@ -31,8 +31,7 @@ class Cart extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -45,8 +44,7 @@ class Cart extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key in query string"
+                        "message" => "invalid key in query string"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -57,7 +55,7 @@ class Cart extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "succesful",
+                "message" => "succesful get user cart",
                 "data" => $cart
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -65,8 +63,7 @@ class Cart extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "cart is empty"
+                "message" => "cart is empty"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -86,8 +83,7 @@ class Cart extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -101,8 +97,7 @@ class Cart extends REST_Controller
                             $api = [
                                 "code" => 400,
                                 "status" => false,
-                                "message" => "failed",
-                                "error_detail" => "product already in cart"
+                                "message" => "product already in cart"
                             ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         }
@@ -110,8 +105,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -124,8 +118,7 @@ class Cart extends REST_Controller
                             $api = [
                                 "code" => 400,
                                 "status" => false,
-                                "message" => "failed",
-                                "error_detail" => "product already in cart"
+                                "message" => "product already in cart"
                             ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         }
@@ -133,8 +126,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -147,8 +139,7 @@ class Cart extends REST_Controller
                             $api = [
                                 "code" => 400,
                                 "status" => false,
-                                "message" => "failed",
-                                "error_detail" => "product already in cart"
+                                "message" => "product already in cart"
                             ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         }
@@ -156,8 +147,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -166,8 +156,7 @@ class Cart extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -178,7 +167,7 @@ class Cart extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful insert product to cart",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -187,7 +176,7 @@ class Cart extends REST_Controller
                 "code" => 500,
                 "status" => false,
                 "message" => "failed",
-                "error_detail" => $result
+                "error_detail" => $result["message"]
             ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -207,8 +196,7 @@ class Cart extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -221,8 +209,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -234,8 +221,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -244,8 +230,7 @@ class Cart extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -256,7 +241,7 @@ class Cart extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful delete product from cart",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -264,15 +249,14 @@ class Cart extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "product not found in cart"
+                "message" => "product not found in cart"
             ];
         } else {
             $api = [
                 "code" => 500,
                 "status" => false,
                 "message" => "failed",
-                "error_detail" => $result
+                "error_detail" => $result["message"]
             ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -292,8 +276,7 @@ class Cart extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -306,8 +289,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -319,8 +301,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "invalid key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -332,8 +313,7 @@ class Cart extends REST_Controller
                         $api = [
                             "code" => 400,
                             "status" => false,
-                            "message" => "failed",
-                            "error_detail" => "key"
+                            "message" => "invalid key"
                         ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
@@ -342,8 +322,7 @@ class Cart extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -353,7 +332,7 @@ class Cart extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update product in cart",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -361,23 +340,21 @@ class Cart extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "cart not modified"
+                    "message" => "cart not modified"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Cart_model->check_cart($query_array["user"], $query_array["product"])) {
                 $api = [
                     "code" => 404,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "product not found"
+                    "message" => "product not found"
                 ];
             } else {
                 $api = [
                     "code" => 500,
                     "status" => false,
                     "message" => "failed",
-                    "error_detail" => $result
+                    "error_detail" => $result["message"]
                 ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }

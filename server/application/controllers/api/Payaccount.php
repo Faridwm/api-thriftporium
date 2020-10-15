@@ -32,8 +32,7 @@ class Payaccount extends REST_Controller
                 $api = [
                     "code" => 400,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "invalid request in query string"
+                    "message" => "invalid request in query string"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
@@ -51,8 +50,7 @@ class Payaccount extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => "failed",
-                        "error_detail" => "invalid key"
+                        "message" => "invalid key"
                     ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
@@ -63,7 +61,7 @@ class Payaccount extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful get payment account",
                 "data" => $payment_account
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -71,8 +69,7 @@ class Payaccount extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "payment account not found"
+                "message" => "payment account not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -138,7 +135,7 @@ class Payaccount extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful create payment account",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -161,7 +158,7 @@ class Payaccount extends REST_Controller
             $api = [
                 "code" => 200,
                 "status" => true,
-                "message" => "successful",
+                "message" => "successful delete payment account",
                 "data" => null
             ];
             $this->response($api, REST_Controller::HTTP_OK);
@@ -169,8 +166,7 @@ class Payaccount extends REST_Controller
             $api = [
                 "code" => 404,
                 "status" => false,
-                "message" => "failed",
-                "error_detail" => "payment account not found"
+                "message" => "payment account not found"
             ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
@@ -195,7 +191,7 @@ class Payaccount extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful",
+                    "message" => "successful update payment account",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -203,16 +199,14 @@ class Payaccount extends REST_Controller
                 $api = [
                     "code" => 304,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "payment account has not modified"
+                    "message" => "payment account has not modified"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Payaccount_model->get_paymentacc_by_id((int) $id)) {
                 $api = [
                     "code" => 404,
                     "status" => false,
-                    "message" => "failed",
-                    "error_detail" => "payment account not found"
+                    "message" => "payment account not found"
                 ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
