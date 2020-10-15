@@ -29,9 +29,12 @@ class Courier extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 1) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "invalid request in query string";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
@@ -42,24 +45,32 @@ class Courier extends REST_Controller
                     $courier = $this->Courier_model->get_courier_by_name($query_array["name"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($courier) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['courier'] = $courier;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $courier
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "courier not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "courier not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -90,10 +101,12 @@ class Courier extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -108,15 +121,20 @@ class Courier extends REST_Controller
         if ($this->courier_validation($data)) {
             $result = $this->Courier_model->add_courier($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Courier has been added";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot add new Courier";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -126,20 +144,28 @@ class Courier extends REST_Controller
     {
         $result = $this->Courier_model->delete_courier((int) $id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Courier has been deleted";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif (!$this->Courier_model->get_courier_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Courier has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Courier not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot delete Courier";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -152,25 +178,36 @@ class Courier extends REST_Controller
             $data["id"] = (int) $id;
             $result = $this->Courier_model->update_courier($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Courier has been updated";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Courier has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Courier has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Courier_model->get_courier_by_id((int) $id)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Courier has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Courier not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update Courier";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }

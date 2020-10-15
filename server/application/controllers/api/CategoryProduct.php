@@ -29,9 +29,13 @@ class CategoryProduct extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 1) {
-                $error['status'] = 400;
-                $error['message'] = "invalid request in query string";
-                $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
@@ -41,24 +45,32 @@ class CategoryProduct extends REST_Controller
                     $category_product = $this->CategoryProduct_model->get_category_by_name($query_array["name"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($category_product) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['category_product'] = $category_product;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $category_product
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "category not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "category product not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -85,10 +97,12 @@ class CategoryProduct extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -103,15 +117,20 @@ class CategoryProduct extends REST_Controller
         if ($this->cp_validation($data)) {
             $result = $this->CategoryProduct_model->add_product_category($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Category has been added";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot add new category";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -121,20 +140,28 @@ class CategoryProduct extends REST_Controller
     {
         $result = $this->CategoryProduct_model->delete_product_category((int) $id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Category has been deleted";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif (!$this->CategoryProduct_model->get_category_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Category has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Category has not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot delete category";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -147,25 +174,36 @@ class CategoryProduct extends REST_Controller
             $data["id"] = (int) $id;
             $result = $this->CategoryProduct_model->update_product_category($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Category has been updated";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Category has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Category has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->CategoryProduct_model->get_category_by_id((int) $id)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Category has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Category has not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update category";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }

@@ -29,9 +29,13 @@ class Payaccount extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 1) {
-                $error['status'] = 400;
-                $error['message'] = "invalid request in query string";
-                $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
@@ -44,24 +48,32 @@ class Payaccount extends REST_Controller
                     $payment_account = $this->Payaccount_model->get_paymentacc_by_type($query_array["type"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($payment_account) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['payment_account'] = $payment_account;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $payment_account
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "payment account not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment account not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -103,10 +115,12 @@ class Payaccount extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -121,15 +135,20 @@ class Payaccount extends REST_Controller
         if ($this->pay_acc_validation($data)) {
             $result = $this->Payaccount_model->add_paymentacc($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Payment account has been added";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot add new Payment account";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -139,20 +158,28 @@ class Payaccount extends REST_Controller
     {
         $result = $this->Payaccount_model->delete_paymentacc((int) $id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Payment account has been deleted";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif (!$this->Payaccount_model->get_paymentacc_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Payment account has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment account not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot delete Payment account";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -165,25 +192,36 @@ class Payaccount extends REST_Controller
             $data["id"] = (int) $id;
             $result = $this->Payaccount_model->update_paymentacc($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Payment account has been updated";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Payment account has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment account has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Payaccount_model->get_paymentacc_by_id((int) $id)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Payment account has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment account not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update Payment account";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }

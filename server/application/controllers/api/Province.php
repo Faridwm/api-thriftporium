@@ -28,9 +28,13 @@ class Province extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 1) {
-                $error['status'] = 400;
-                $error['message'] = "invalid request in query string";
-                $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
 
             switch ($keys[0]) {
@@ -41,24 +45,32 @@ class Province extends REST_Controller
                     $province = $this->Province_model->get_province_by_name($query_array["name"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($province) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['provinces'] = $province;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $province
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "province not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Province not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }

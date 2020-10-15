@@ -25,15 +25,20 @@ class Users extends REST_Controller
         // var_dump($user_role);
         // die;
         if ($user_role) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['user_role'] = $user_role;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $user_role
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "role tidak ditemukan";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "role not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -49,34 +54,47 @@ class Users extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 2) {
-                $error['status'] = 400;
-                $error['message'] = "invalid request in query string";
-                $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
                     if (isset($keys[1])) {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
                     $users = $this->Users_model->get_user_by_id((int) $query_array["id"]);
                     break;
                 case 'email':
                     if (isset($keys[1])) {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
                     $users = $this->Users_model->get_user_by_email($query_array["email"]);
                     break;
                 case 'role_id':
                     if (isset($keys[1])) {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
                     $users = $this->Users_model->get_user_by_role_id($query_array["role_id"]);
@@ -85,9 +103,12 @@ class Users extends REST_Controller
                     if ($keys[1] === 'provider') {
                         $users = $this->Users_model->get_user_by_sosmed($query_array["uid"], $query_array["provider"]);
                     } else {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
                     break;
@@ -95,31 +116,42 @@ class Users extends REST_Controller
                     if ($keys[1] === 'uid') {
                         $users = $this->Users_model->get_user_by_sosmed($query_array["uid"], $query_array["provider"]);
                     } else {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     }
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($users) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['users'] = $users;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $users
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "user not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "user not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -158,10 +190,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -179,16 +213,21 @@ class Users extends REST_Controller
             // die;
             $result = $this->Users_model->add_user($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "account has been registered";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 // $api['user'] = $message;
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot register account";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -217,10 +256,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -236,23 +277,29 @@ class Users extends REST_Controller
             // var_dump($result);
             // die;
             if ($result['status']) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "successful";
-                $api['user_data'] = $result['login_data'];
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" =>  $result['login_data']
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
                 if ($result['code'] === 404) {
-                    $api['code'] = 404;
-                    $api['status'] = false;
-                    $api['message'] = "Failed to login";
-                    $api['error_details'] = $result['message'];
+                    $api = [
+                        "code" => 404,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => $result["message"]
+                    ];
                     $this->response($api, REST_Controller::HTTP_NOT_FOUND);
                 } elseif ($result['code'] === 400) {
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "Failed to login";
-                    $api['error_details'] = $result['message'];
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => $result["message"]
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
@@ -263,15 +310,20 @@ class Users extends REST_Controller
     {
         $user_detail = $this->Users_model->get_user_details((int) $id);
         if ($user_detail) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['user_role'] = $user_detail;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $user_detail
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "role tidak ditemukan";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "user not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -320,10 +372,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -339,22 +393,28 @@ class Users extends REST_Controller
 
             $result = $this->Users_model->update_user_detail($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = 'successful';
-                $api['detail'] = 'profile updated';
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = 'profile not changed';
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "profile not changed"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = $result;
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -382,10 +442,12 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -400,22 +462,28 @@ class Users extends REST_Controller
             $data['id'] = (int) $id;
             $result = $this->Users_model->update_password($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = 'successful';
-                $api['detail'] = 'password changed';
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = 'password not changed';
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "password not changed"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = $result;
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -425,28 +493,36 @@ class Users extends REST_Controller
     {
         $result = $this->Users_model->delete_user($id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['detail'] = 'user deleted';
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = 'failed';
-            $api['detail'] = 'user not deleted';
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "user not deleted"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Users_model->get_user_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = 'failed';
-            $api['detail'] = 'user not found';
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "user not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = 'failed';
-            $api['detail'] = $result;
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -491,37 +567,47 @@ class Users extends REST_Controller
 
         $validation = $validate->dataValidation((object) $data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             $result = $this->Users_model->add_user_with_sosmed($data);
             if ($result >= 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = 'successful';
-                $api['detail'] = 'user sosmed has been created';
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === -1) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = "cannot register sosmed, because it's not user";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "cannot register sosmed, because it's not user"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif ($result === -2) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = "cannot register sosmed, because sosmed has already register";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "cannot register sosmed, because sosmed has already register"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = 'failed';
-                $api['detail'] = $result;
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }

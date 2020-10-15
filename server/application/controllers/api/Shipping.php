@@ -29,17 +29,23 @@ class Shipping extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 2) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "invalid request in query string";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
                     if (isset($keys[1])) {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
                     }
@@ -68,9 +74,12 @@ class Shipping extends REST_Controller
                             $status = 3;
                             break;
                         default:
-                            $api['code'] = 400;
-                            $api['status'] = false;
-                            $api['message'] = "invalid key";
+                            $api = [
+                                "code" => 400,
+                                "status" => false,
+                                "message" => "failed",
+                                "error_detail" => "invalid key"
+                            ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
                     }
@@ -78,23 +87,31 @@ class Shipping extends REST_Controller
                     $shipping = $this->Shipping_model->get_shipping(null, $user, $status);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
         if ($shipping) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['shipping'] = $shipping;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $shipping
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "shipping not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "shipping not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -122,34 +139,47 @@ class Shipping extends REST_Controller
 
         $validation = $validate->dataValidation((object) $data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             $result = $this->Shipping_model->update_shipping_receipt((int) $id, $data["receipt_number"], $data["receipt_picture"]);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Shipping has been update";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Shipping has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Shipping status has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Shipping_model->get_shipping((int) $id)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Shipping has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "shipping not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update Shipping";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -159,25 +189,36 @@ class Shipping extends REST_Controller
     {
         $result = $this->Shipping_model->arrive_shipping((int) $id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Shipping status has been update";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "Shipping status has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Shipping status has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Shipping_model->get_shipping((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Shipping has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "shipping not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update Shipping status";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

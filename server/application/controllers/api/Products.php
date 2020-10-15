@@ -55,9 +55,12 @@ class Products extends REST_Controller
                             $status = 2;
                             break;
                         default:
-                            $api['code'] = 400;
-                            $api['status'] = false;
-                            $api['message'] = "invalid key";
+                            $api = [
+                                "code" => 400,
+                                "status" => false,
+                                "message" => "failed",
+                                "error_detail" => "invalid key"
+                            ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
                     }
@@ -67,24 +70,32 @@ class Products extends REST_Controller
                     $product = $this->Product_model->get_product_by_id((int) $query_array["id"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($product) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['products'] = $product;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $product
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "product not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -130,10 +141,12 @@ class Products extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -148,15 +161,20 @@ class Products extends REST_Controller
         if ($this->product_validation($data)) {
             $result = $this->Product_model->add_product($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Product has been added";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot add new Product";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -166,20 +184,28 @@ class Products extends REST_Controller
     {
         $result = $this->Product_model->delete_product((int) $id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Product has been deleted";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Product has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot delete Product";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -228,10 +254,12 @@ class Products extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -246,25 +274,36 @@ class Products extends REST_Controller
             $data["id"] = (int) $id;
             $result = $this->Product_model->update_product($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Product has been updated";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Product has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "product has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Product has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "product not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update Product";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -274,25 +313,36 @@ class Products extends REST_Controller
     {
         $result = $this->Product_model->update_status_product($id, "unpublish");
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Product has been unpublished";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0 && $this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "Product has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Product has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update Product";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -301,25 +351,36 @@ class Products extends REST_Controller
     {
         $result = $this->Product_model->update_status_product($id, "publish");
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Product has been published";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0 && $this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "Product has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Product has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update Product";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -328,25 +389,36 @@ class Products extends REST_Controller
     {
         $result = $this->Product_model->update_status_product($id, "sold");
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Product has been sold";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0 && $this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "Product has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Product_model->get_product_by_id((int) $id)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Product has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "product not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update Product";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

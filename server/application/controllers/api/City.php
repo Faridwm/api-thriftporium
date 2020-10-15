@@ -28,9 +28,13 @@ class City extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 1) {
-                $error['status'] = 400;
-                $error['message'] = "invalid request in query string";
-                $this->response($error, REST_Controller::HTTP_BAD_REQUEST);
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
+                $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
 
             switch ($keys[0]) {
@@ -47,24 +51,32 @@ class City extends REST_Controller
                     $city = $this->City_model->get_city_by_province_name($query_array["p_name"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
 
         if ($city) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['cities'] = $city;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $city
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "city not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "City not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }

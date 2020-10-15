@@ -29,17 +29,23 @@ class Order extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 3) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "invalid request in query string";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
                     if (isset($keys[1])) {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
                     }
@@ -69,9 +75,12 @@ class Order extends REST_Controller
                             $status = 3;
                             break;
                         default:
-                            $api['code'] = 400;
-                            $api['status'] = false;
-                            $api['message'] = "invalid key";
+                            $api = [
+                                "code" => 400,
+                                "status" => false,
+                                "message" => "failed",
+                                "error_detail" => "invalid key"
+                            ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
                     }
@@ -79,23 +88,31 @@ class Order extends REST_Controller
                     $order = $this->Order_model->get_order(null, $user, $order_number, $status);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
         if ($order) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['orders'] = $order;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $order
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "order not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "order not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -146,10 +163,12 @@ class Order extends REST_Controller
 
         $validation = $validate->dataValidation((object) $json_data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
@@ -172,10 +191,12 @@ class Order extends REST_Controller
 
                 $validation_product = $validate->dataValidation((object) $json_data["products"][$i], $schema_product);
                 if (!$validation_product->isValid()) {
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['error'] = $validation_product->getFirstError()->keyword();
-                    $api['error_data'] =  $validation_product->getFirstError()->dataPointer();
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => $validation->getFirstError()->keyword(),
+                        "error_detail" => $validation->getFirstError()->dataPointer()
+                    ];
                     // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                 }
@@ -191,20 +212,28 @@ class Order extends REST_Controller
         if ($this->order_validation($data)) {
             $result = $this->Order_model->make_order($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Order has been created";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === -1) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "Order gagal, Produk habis";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Order gagal, Produk habis"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot make order";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -215,25 +244,36 @@ class Order extends REST_Controller
         $result = $this->Order_model->topayment_order($order_id);
 
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Order status has been updated to payment";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "Order status has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Order status has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Order_model->get_order((int) $order_id, null, null)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Order has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Order has not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update Order";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -243,25 +283,35 @@ class Order extends REST_Controller
         $result = $this->Order_model->topayment_order($order_id);
 
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Order status has been canceled";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "Order status has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Order status has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif (!$this->Order_model->get_Order_by_id((int) $order_id, null, null)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Order has not found";
-            $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "Order has not found"
+            ];
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update Order";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

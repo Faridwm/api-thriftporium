@@ -29,17 +29,23 @@ class Payment extends REST_Controller
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 2) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "invalid request in query string";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
                 case 'id':
                     if (isset($keys[1])) {
-                        $api['code'] = 400;
-                        $api['status'] = false;
-                        $api['message'] = "invalid key";
+                        $api = [
+                            "code" => 400,
+                            "status" => false,
+                            "message" => "failed",
+                            "error_detail" => "invalid key"
+                        ];
                         $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                         break;
                     }
@@ -69,9 +75,12 @@ class Payment extends REST_Controller
                             $status = 3;
                             break;
                         default:
-                            $api['code'] = 400;
-                            $api['status'] = false;
-                            $api['message'] = "invalid key";
+                            $api = [
+                                "code" => 400,
+                                "status" => false,
+                                "message" => "failed",
+                                "error_detail" => "invalid key"
+                            ];
                             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                             break;
                     }
@@ -79,23 +88,31 @@ class Payment extends REST_Controller
                     $payment = $this->Payment_model->get_payment(null, $user, $order, $status);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
         }
         if ($payment) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = 'successful';
-            $api['payment'] = $payment;
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => $payment
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } else {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "payment not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -128,24 +145,31 @@ class Payment extends REST_Controller
 
         $validation = $validate->dataValidation((object) $data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             $result = $this->Payment_model->make_payment($data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Payment has been created";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot make Payment";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -179,34 +203,47 @@ class Payment extends REST_Controller
 
         $validation = $validate->dataValidation((object) $data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
             $result = $this->Payment_model->update_payment_bank_user($id, $data);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Payment detail has been update";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "payment status has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment status has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif (!$this->Payment_model->get_payment((int) $id, null, null, null)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Payment has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot make Payment";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -216,35 +253,52 @@ class Payment extends REST_Controller
     {
         $result = $this->Payment_model->canceled_payment($id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Payment has been canceled";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "payment status has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment status has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif ($result === -1) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['message'] = "payment status already canceled";
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment status already canceled"
+            ];
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } elseif ($result === -2) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['message'] = "payment status cannot be modified";
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment status cannot be modified"
+            ];
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } elseif (!$this->Payment_model->get_payment((int) $id, null, null, null)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Payment has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update payment";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment not found"
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -272,50 +326,72 @@ class Payment extends REST_Controller
 
         $validation = $validate->dataValidation((object) $data, $schema);
         if (!$validation->isValid()) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['error'] = $validation->getFirstError()->keyword();
-            $api['error_data'] =  $validation->getFirstError()->dataPointer();
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => $validation->getFirstError()->keyword(),
+                "error_detail" => $validation->getFirstError()->dataPointer()
+            ];
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
 
             $result = $this->Payment_model->update_payment_receipt($id, $data["receipt"], $data["method"]);
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Receipt has been updated";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Receipt has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "receipt has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif ($result === -1) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "Receipt already canceled";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Receipt already canceled"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif ($result === -2) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "Receipt already verified";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "Receipt already verified"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif ($result === -3) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "Wrong method";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "wrong method"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif (!$this->Payment_model->get_payment((int) $id, null, null, null)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Payment has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update Receipt";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -328,17 +404,23 @@ class Payment extends REST_Controller
         parse_str($_SERVER["QUERY_STRING"], $query_array);
 
         if (count($query_array) === 0) {
-            $api['code'] = 400;
-            $api['status'] = false;
-            $api['message'] = "invalid request in query string";
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "invalid request in query string"
+            ];
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             // $result = $this->Payment_model->update_payment_transfer_to();
         } else {
             $keys = array_keys($query_array);
             if (count($keys) > 2) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "invalid request in query string";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "invalid request in query string"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             }
             switch ($keys[0]) {
@@ -346,42 +428,63 @@ class Payment extends REST_Controller
                     $result = $this->Payment_model->update_payment_transfer_to((int)$query_array["id"], (int) $query_array["transfer_to"]);
                     break;
                 default:
-                    $api['code'] = 400;
-                    $api['status'] = false;
-                    $api['message'] = "invalid key";
+                    $api = [
+                        "code" => 400,
+                        "status" => false,
+                        "message" => "failed",
+                        "error_detail" => "invalid key"
+                    ];
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
                     break;
             }
             if ($result === 1) {
-                $api['code'] = 200;
-                $api['status'] = true;
-                $api['message'] = "Payment has been updated";
+                $api = [
+                    "code" => 200,
+                    "status" => true,
+                    "message" => "successful",
+                    "data" => null
+                ];
                 $this->response($api, REST_Controller::HTTP_OK);
             } elseif ($result === 0) {
-                $api['code'] = 304;
-                $api['status'] = false;
-                $api['message'] = "payment has not modified";
+                $api = [
+                    "code" => 304,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment has not modified"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
             } elseif ($result === -1) {
-                $api['code'] = 400;
-                $api['status'] = false;
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment already canceled"
+                ];
                 $api['message'] = "payment already canceled";
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif ($result === -2) {
-                $api['code'] = 400;
-                $api['status'] = false;
-                $api['message'] = "payment already upload receipt";
+                $api = [
+                    "code" => 400,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment already upload receipt"
+                ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
             } elseif (!$this->Payment_model->get_payment((int) $id, null, null, null)) {
-                $api['code'] = 404;
-                $api['status'] = false;
-                $api['message'] = "Payment has not found";
+                $api = [
+                    "code" => 404,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => "payment not found"
+                ];
                 $this->response($api, REST_Controller::HTTP_NOT_FOUND);
             } else {
-                $api['code'] = 500;
-                $api['status'] = false;
-                $api['message'] = "connot update payment";
-                $api['error_details'] = $result['message'];
+                $api = [
+                    "code" => 500,
+                    "status" => false,
+                    "message" => "failed",
+                    "error_detail" => $result["message"]
+                ];
                 $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -391,30 +494,45 @@ class Payment extends REST_Controller
     {
         $result = $this->Payment_model->verfied_payment($id);
         if ($result === 1) {
-            $api['code'] = 200;
-            $api['status'] = true;
-            $api['message'] = "Payment has been verified";
+            $api = [
+                "code" => 200,
+                "status" => true,
+                "message" => "successful",
+                "data" => null
+            ];
             $this->response($api, REST_Controller::HTTP_OK);
         } elseif ($result === 0) {
-            $api['code'] = 304;
-            $api['status'] = false;
-            $api['message'] = "payment status has not modified";
+            $api = [
+                "code" => 304,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment status has not modified"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
         } elseif ($result === -1) {
-            $api['code'] = 400;
-            $api['status'] = false;
+            $api = [
+                "code" => 400,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment status already canceled"
+            ];
             $api['message'] = "payment status already canceled";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } elseif (!$this->Payment_model->get_payment((int) $id, null, null, null)) {
-            $api['code'] = 404;
-            $api['status'] = false;
-            $api['message'] = "Payment has not found";
+            $api = [
+                "code" => 404,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => "payment not found"
+            ];
             $this->response($api, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $api['code'] = 500;
-            $api['status'] = false;
-            $api['message'] = "connot update payment";
-            $api['error_details'] = $result['message'];
+            $api = [
+                "code" => 500,
+                "status" => false,
+                "message" => "failed",
+                "error_detail" => $result["message"]
+            ];
             $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
