@@ -99,6 +99,12 @@ class Order_model extends CI_Model
         $shipping_price = $order_data["shipping_price"];
         $products = $order_data["products"];
 
+        $transfer_to = $order_data["transfer_to"];
+        $total_price = $order_data["total_price"];
+        $account_bank = $order_data["account_bank"];
+        $account_name = $order_data["account_name"];
+        $account_number = $order_data["account_number"];
+
         $this->db->trans_begin();
 
         $order_uuid = $this->db->query("SELECT uuid_short()")->row_array()["uuid_short()"];
@@ -136,9 +142,16 @@ class Order_model extends CI_Model
                 }
             }
 
-            $affected_row = $this->db->affected_rows();
-            $this->db->trans_commit();
-            return $affected_row;
+            $query_insert_payment = "INSERT INTO payments(id, inv_number, order_id, user_id, payment_transfer_to, total_price, payment_accountbank, payment_accountname, payment_accountnumber) VALUES (uuid_short(), inv_num(), $order_uuid, $user, $transfer_to, $total_price, '$account_bank', '$account_name', '$account_number')";
+            if (!$this->db->simple_query($query_insert_payment)) {
+                $error = $this->db->error();
+                $this->db->trans_rollback();
+                return $error;
+            } else {
+                $affected_row = $this->db->affected_rows();
+                $this->db->trans_commit();
+                return $affected_row;
+            }
         }
     }
 

@@ -150,9 +150,30 @@ class Order extends REST_Controller
                 "products" => (object) [
                     "type" => "array",
                     "minItems" => 1
+                ],
+                "transfer_to" => (object) [
+                    "type" => 'integer'
+                ],
+                "total_price" => (object) [
+                    "type" => "number"
+                ],
+                "account_bank" => (object) [
+                    "type" => "string",
+                    "maxLength" => 100
+                ],
+                "account_name" => (object) [
+                    "type" => "string",
+                    "maxLength" => 100
+                ],
+                "account_number" => (object) [
+                    "type" => 'string',
+                    "maxLength" => 100
                 ]
             ],
-            "required" => ["user", "street", "city", "zipcode", "shipping_receiver", "shipping_phone", "shipping_courier", "shipping_price", "products"],
+            "required" => [
+                "user", "street", "city", "zipcode", "shipping_receiver", "shipping_phone", "shipping_courier", "shipping_price", "products",
+                "transfer_to", "total_price", "account_bank", "account_name", "account_number"
+            ],
             "additionalProperties" => false
         ];
 
@@ -206,7 +227,7 @@ class Order extends REST_Controller
 
         if ($this->order_validation($data)) {
             $result = $this->Order_model->make_order($data);
-            if ($result === 1) {
+            if ($result >= 1) {
                 $api = [
                     "code" => 200,
                     "status" => true,
