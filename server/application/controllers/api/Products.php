@@ -115,6 +115,9 @@ class Products extends REST_Controller
                 "stock" => (object) [
                     "type" => 'integer'
                 ],
+                "weight" => (object) [
+                    "type" => 'integer'
+                ],
                 "category_id" => (object) [
                     "type" => "integer"
                 ],
@@ -132,7 +135,7 @@ class Products extends REST_Controller
                     ]
                 ]
             ],
-            "required" => ["name", "description", "stock", "category_id", "price", "pictures"],
+            "required" => ["name", "description", "stock", "weight", "category_id", "price", "pictures"],
             "additionalProperties" => false
         ];
 
@@ -227,6 +230,9 @@ class Products extends REST_Controller
                 "availability" => (object) [
                     "type" => 'integer'
                 ],
+                "weight" => (object) [
+                    "type" => 'integer'
+                ],
                 "category_id" => (object) [
                     "type" => "integer"
                 ],
@@ -244,7 +250,7 @@ class Products extends REST_Controller
                     ]
                 ]
             ],
-            "required" => ["name", "description", "stock", "availability", "category_id", "price", "pictures"],
+            "required" => ["name", "description", "stock", "availability", "weight", "category_id", "price", "pictures"],
             "additionalProperties" => false
         ];
 
