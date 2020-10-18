@@ -91,8 +91,8 @@ $route['user/password/(:num)']['PUT'] = 'api/users/password/$1';
 $route['api/cart'] = '403_override';
 $route['user/cart']['GET'] = 'api/cart';
 $route['user/cart']['POST'] = 'api/cart';
-$route['user/cart']['DELETE'] = 'api/cart';
-$route['user/cart']['PUT'] = 'api/cart';
+$route['user/cart/(:num)/(:num)']['DELETE'] = 'api/cart/$1/$2';
+$route['user/cart/(:num)']['PUT'] = 'api/cart/$1';
 
 // product routes
 $route['api/categoryProduct'] = '403_override';
