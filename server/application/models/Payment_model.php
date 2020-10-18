@@ -103,7 +103,7 @@ class Payment_model extends CI_Model
         }
     }
 
-    public function update_payment_receipt($payment_id, $receipt, $method)
+    public function update_payment_receipt($payment_id, $receipt = null, $method)
     {
         $status = $this->db->query("SELECT payment_status FROM payments WHERE id = $payment_id")->row_array()["payment_status"];
 
@@ -113,14 +113,14 @@ class Payment_model extends CI_Model
             return -2; // payment udah diverifikasi
         } else {
             if ($method === "UPLOAD") {
-                $query = "UPDATE payments SET payment_receipt = $receipt, payment_status = 2 WHERE id = $payment_id";
+                $query_update_payment = "UPDATE payments SET payment_receipt = $receipt, payment_status = 2 WHERE id = $payment_id";
             } elseif ($method === "REJECT") {
-                $query = "UPDATE payments SET payment_receipt = '', payment_status = 1 WHERE id = $payment_id";
+                $query_update_payment = "UPDATE payments SET payment_receipt = '', payment_status = 1 WHERE id = $payment_id";
             } else {
                 return -3; // salah method
             }
             $this->db->trans_begin();
-            if (!$this->db->simple_query($query)) {
+            if (!$this->db->simple_query($query_update_payment)) {
                 $error = $this->db->error();
                 $this->db->trans_rollback();
                 return $error;

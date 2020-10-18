@@ -308,7 +308,7 @@ class Payment extends REST_Controller
                     "enum" => ["UPLOAD", "REJECT"]
                 ]
             ],
-            "required" => ["receipt", "method"],
+            "required" => ["method"],
             "additionalProperties" => false
         ];
 
@@ -324,7 +324,7 @@ class Payment extends REST_Controller
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
 
-            $result = $this->Payment_model->update_payment_receipt($id, $data["receipt"], $data["method"]);
+            $result = $this->Payment_model->update_payment_receipt($id, isset($data["receipt"]) ? $data["receipt"] : null, $data["method"]);
             if ($result === 1) {
                 $api = [
                     "code" => 200,

@@ -155,28 +155,28 @@ class Order_model extends CI_Model
         }
     }
 
-    public function to_payment_order($order_id)
-    {
-        $status = $this->db->query("SELECT order_status FROM vw_order WHERE id = $order_id")->row_array()["order_status"];
+    // public function to_payment_order($order_id)
+    // {
+    //     $status = $this->db->query("SELECT order_status FROM vw_order WHERE id = $order_id")->row_array()["order_status"];
 
-        if ($status >= 2) {
-            return "udah di pembayaran";
-        } elseif ($status === 0) {
-            return "udah di cancel";
-        } else {
-            $query_update = "UPDATE orders SET order_status = 2 WHERE id = $order_id";
-            $this->db->trans_begin();
-            if (!$this->db->simple_query($query_update)) {
-                $error = $this->db->error();
-                $this->db->trans_rollback();
-                return $error;
-            } else {
-                $affected_row = $this->db->affected_rows();
-                $this->db->trans_commit();
-                return $affected_row;
-            }
-        }
-    }
+    //     if ($status >= 2) {
+    //         return "udah di pembayaran";
+    //     } elseif ($status === 0) {
+    //         return "udah di cancel";
+    //     } else {
+    //         $query_update = "UPDATE orders SET order_status = 2 WHERE id = $order_id";
+    //         $this->db->trans_begin();
+    //         if (!$this->db->simple_query($query_update)) {
+    //             $error = $this->db->error();
+    //             $this->db->trans_rollback();
+    //             return $error;
+    //         } else {
+    //             $affected_row = $this->db->affected_rows();
+    //             $this->db->trans_commit();
+    //             return $affected_row;
+    //         }
+    //     }
+    // }
 
     public function canceled_order($order_id)
     {

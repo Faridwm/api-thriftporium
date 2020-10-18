@@ -141,7 +141,7 @@ $route['api/order/topayment'] = '403_override';
 $route['api/order/canceled'] = '403_override';
 $route['order']['GET'] = 'api/order';
 $route['order']['POST'] = 'api/order';
-$route['order/topayment/(:num)']['PUT'] = 'api/order/topayment/$1';
+// $route['order/topayment/(:num)']['PUT'] = 'api/order/topayment/$1';
 $route['order/canceled/(:num)']['PUT'] = 'api/order/canceled/$1';
 
 $route['api/order/shipping'] = '403_override';

@@ -254,42 +254,42 @@ class Order extends REST_Controller
         }
     }
 
-    public function topayment_put($order_id)
-    {
-        $result = $this->Order_model->topayment_order($order_id);
+    // public function topayment_put($order_id)
+    // {
+    //     $result = $this->Order_model->topayment_order($order_id);
 
-        if ($result === 1) {
-            $api = [
-                "code" => 200,
-                "status" => true,
-                "message" => "successful update order status to payment",
-                "data" => null
-            ];
-            $this->response($api, REST_Controller::HTTP_OK);
-        } elseif ($result === 0) {
-            $api = [
-                "code" => 304,
-                "status" => false,
-                "message" => "Order status has not modified"
-            ];
-            $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
-        } elseif (!$this->Order_model->get_order((int) $order_id, null, null)) {
-            $api = [
-                "code" => 404,
-                "status" => false,
-                "message" => "Order has not found"
-            ];
-            $this->response($api, REST_Controller::HTTP_NOT_FOUND);
-        } else {
-            $api = [
-                "code" => 500,
-                "status" => false,
-                "message" => "failed",
-                "error_detail" => $result["message"]
-            ];
-            $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    //     if ($result === 1) {
+    //         $api = [
+    //             "code" => 200,
+    //             "status" => true,
+    //             "message" => "successful update order status to payment",
+    //             "data" => null
+    //         ];
+    //         $this->response($api, REST_Controller::HTTP_OK);
+    //     } elseif ($result === 0) {
+    //         $api = [
+    //             "code" => 304,
+    //             "status" => false,
+    //             "message" => "Order status has not modified"
+    //         ];
+    //         $this->response($api, REST_Controller::HTTP_NOT_MODIFIED);
+    //     } elseif (!$this->Order_model->get_order((int) $order_id, null, null)) {
+    //         $api = [
+    //             "code" => 404,
+    //             "status" => false,
+    //             "message" => "Order has not found"
+    //         ];
+    //         $this->response($api, REST_Controller::HTTP_NOT_FOUND);
+    //     } else {
+    //         $api = [
+    //             "code" => 500,
+    //             "status" => false,
+    //             "message" => "failed",
+    //             "error_detail" => $result["message"]
+    //         ];
+    //         $this->response($api, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     public function canceled_put($order_id)
     {
