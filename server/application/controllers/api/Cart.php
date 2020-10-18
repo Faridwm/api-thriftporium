@@ -70,7 +70,7 @@ class Cart extends REST_Controller
         }
     }
 
-    public function index_post()
+    public function index_post($user_id)
     {
         $data = $this->post();
         $validate = new Validator();
@@ -78,9 +78,6 @@ class Cart extends REST_Controller
         $schema = (object) [
             "type" => "object",
             "properties" => (object) [
-                "user_id" => (object) [
-                    "type" => "integer"
-                ],
                 "product" => (object) [
                     "type" => "integer"
                 ],
@@ -88,7 +85,7 @@ class Cart extends REST_Controller
                     "type" => "integer"
                 ]
             ],
-            "required" => ["user_id", "product", "qty"],
+            "required" => ["product", "qty"],
             "additionalProperties" => false
         ];
 
@@ -103,7 +100,7 @@ class Cart extends REST_Controller
             // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
             $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            $result = $this->Cart_model->add_cart_user((int) $data["user_id"], (int) $data["product"], (int) $data["qty"]);
+            $result = $this->Cart_model->add_cart_user((int) $user_id, (int) $data["product"], (int) $data["qty"]);
             if ($result === 1) {
                 $api = [
                     "code" => 200,
