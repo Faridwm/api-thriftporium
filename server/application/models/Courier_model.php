@@ -15,7 +15,7 @@ class Courier_model extends CI_Model
 
     public function get_courier_by_name($name)
     {
-        return $this->db->query("SELECT * FROM couriers WHERE courier_name LIKE '%$name%'");
+        return $this->db->query("SELECT * FROM couriers WHERE courier_name LIKE '%$name%'")->result_array();
     }
 
     public function add_courier($courier_data)

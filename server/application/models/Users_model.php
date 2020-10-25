@@ -30,7 +30,7 @@ class Users_model extends CI_Model
 
     public function get_user_by_sosmed($uid, $provider)
     {
-        return $this->db->query("SELECT * FROM vw_user_profile WHERE uid = '$uid' AND $provider = '$provider'")->row_array();
+        return $this->db->query("SELECT * FROM vw_user_profile WHERE uid = '$uid' AND provider = '$provider'")->result_array();
     }
 
     public function login($user_login)
