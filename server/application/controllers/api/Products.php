@@ -68,6 +68,21 @@ class Products extends REST_Controller
                 case 'id':
                     $product = $this->Product_model->get_product_by_id((int) $query_array["id"]);
                     break;
+                case 'time':
+                    switch ($query_array["time"]) {
+                        case 'latest':
+                            $product = $this->Product_model->get_product_by_latest();
+                            break;
+                        default:
+                            $api = [
+                                "code" => 400,
+                                "status" => false,
+                                "message" => "invalid time"
+                            ];
+                            $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
+                            break;
+                    }
+                    break;
                 default:
                     $api = [
                         "code" => 400,

@@ -40,6 +40,19 @@ class Product_model extends CI_Model
         }
     }
 
+    public function get_product_by_latest()
+    {
+        $product = $this->db->query("SELECT * FROM vw_products ORDER BY created_at DESC LIMIT 9")->result_array();
+        if ($product) {
+            for ($i = 0; $i < count($product); $i++) {
+                $product[$i]['product_pictures'] = explode(", ", $product[$i]['product_pictures']);
+            }
+            return $product;
+        } else {
+            return false;
+        }
+    }
+
     public function get_product_by_id($id)
     {
         $product = $this->db->query("SELECT * FROM vw_products WHERE id = $id")->row_array();
