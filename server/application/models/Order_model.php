@@ -123,7 +123,7 @@ class Order_model extends CI_Model
                 $this->db->simple_query($remove_cart);
 
                 // check avaibility
-                $avaibility = $this->db->query("SELECT check_avaibility($product_id, $product_qty) AS `check`")->row_array()["check"];
+                $avaibility = $this->db->query("SELECT check_availability($product_id, $product_qty) AS `check`")->row_array()["check"];
                 if ($avaibility === 1) {
                     $query_insert_op = "INSERT INTO order_product VALUES ($order_uuid, $product_id, $product_qty)";
                     if (!$this->db->simple_query($query_insert_op)) {

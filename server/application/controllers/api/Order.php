@@ -210,8 +210,8 @@ class Order extends REST_Controller
                     $api = [
                         "code" => 400,
                         "status" => false,
-                        "message" => $validation->getFirstError()->keyword(),
-                        "error_detail" => $validation->getFirstError()->dataPointer()
+                        "message" => $validation_product->getFirstError()->keyword(),
+                        "error_detail" => $validation_product->getFirstError()->dataPointer()
                     ];
                     // $api['message'] = $api['error'] . " in " .  $api['error_data'] . " field";
                     $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
@@ -227,7 +227,7 @@ class Order extends REST_Controller
 
         if ($this->order_validation($data)) {
             $result = $this->Order_model->make_order($data);
-            if ($result >= 1) {
+            if ($result === 1) {
                 $api = [
                     "code" => 200,
                     "status" => true,
