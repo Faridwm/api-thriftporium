@@ -63,9 +63,9 @@ class Payment_model extends CI_Model
 
     public function update_payment_bank_user($payment_id, $account_detail)
     {
-        $bank = $account_detail["bank"];
-        $name = $account_detail["name"];
-        $number = $account_detail["number"];
+        $bank = $account_detail["account_bank"];
+        $name = $account_detail["account_name"];
+        $number = $account_detail["account_number"];
 
         $query = "UPDATE payments SET payment_accountbank = '$bank', payment_accountname = '$name', payment_accountnumber = '$number' WHERE id = $payment_id";
         $this->db->trans_begin();

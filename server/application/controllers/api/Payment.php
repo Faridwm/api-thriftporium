@@ -172,7 +172,7 @@ class Payment extends REST_Controller
 
     public function bank_put($id)
     {
-        $data = $this->post();
+        $data = $this->put();
 
         $validate = new Validator();
 
