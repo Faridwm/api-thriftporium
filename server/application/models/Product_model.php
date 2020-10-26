@@ -158,7 +158,13 @@ class Product_model extends CI_Model
             $this->db->trans_rollback();
             return $error;
         } else {
-            $query_update = "UPDATE products SET product_name = '$name', product_description = '$description', product_stock = '$stock', product_availability = $availability, product_weight = $weight, product_price = '$price', product_category = $category_id, modified_at = NOW() WHERE id = $id";
+            if ($availability > 0) {
+                $p_status = 1;
+            } else {
+                $p_status = 0;
+            }
+
+            $query_update = "UPDATE products SET product_name = '$name', product_description = '$description', product_stock = '$stock', product_availability = $availability, product_weight = $weight, product_price = '$price', product_category = $category_id, product_status = $p_status, modified_at = NOW() WHERE id = $id";
             if (!$this->db->simple_query($query_update)) {
                 $error = $this->db->error();
                 $this->db->trans_rollback();

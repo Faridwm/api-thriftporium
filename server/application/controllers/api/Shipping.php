@@ -128,7 +128,7 @@ class Shipping extends REST_Controller
                     "maxLength" => 255
                 ]
             ],
-            "required" => ["receipt_number", "receipt_picture", "transfer_to", "total_price"],
+            "required" => ["receipt_number", "receipt_picture"],
             "additionalProperties" => false
         ];
 

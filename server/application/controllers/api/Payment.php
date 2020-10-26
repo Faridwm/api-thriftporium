@@ -329,7 +329,7 @@ class Payment extends REST_Controller
                 $api = [
                     "code" => 200,
                     "status" => true,
-                    "message" => "successful upload receipt",
+                    "message" => "successful " . $data["method"] . " receipt",
                     "data" => null
                 ];
                 $this->response($api, REST_Controller::HTTP_OK);
@@ -380,7 +380,7 @@ class Payment extends REST_Controller
         }
     }
 
-    public function transfer_put($id)
+    public function transfer_put()
     {
         $result = null;
 
@@ -447,7 +447,7 @@ class Payment extends REST_Controller
                     "message" => "payment already upload receipt"
                 ];
                 $this->response($api, REST_Controller::HTTP_BAD_REQUEST);
-            } elseif (!$this->Payment_model->get_payment((int) $id, null, null, null)) {
+            } elseif (!$this->Payment_model->get_payment((int) $query_array["id"], null, null, null)) {
                 $api = [
                     "code" => 404,
                     "status" => false,

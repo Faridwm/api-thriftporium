@@ -113,7 +113,7 @@ class Payment_model extends CI_Model
             return -2; // payment udah diverifikasi
         } else {
             if ($method === "UPLOAD") {
-                $query_update_payment = "UPDATE payments SET payment_receipt = $receipt, payment_status = 2 WHERE id = $payment_id";
+                $query_update_payment = "UPDATE payments SET payment_receipt = '$receipt', payment_status = 2 WHERE id = $payment_id";
             } elseif ($method === "REJECT") {
                 $query_update_payment = "UPDATE payments SET payment_receipt = '', payment_status = 1 WHERE id = $payment_id";
             } else {
@@ -141,7 +141,7 @@ class Payment_model extends CI_Model
         } elseif ($status > 1) {
             return -1; // udah upload bukti bayar
         } else {
-            $query = "UPDATE payments SET payment_transfet_to = $transfer_to WHERE id = $payment_id";
+            $query = "UPDATE payments SET payment_transfer_to = $transfer_to WHERE id = $payment_id";
             $this->db->trans_begin();
             if (!$this->db->simple_query($query)) {
                 $error = $this->db->error();

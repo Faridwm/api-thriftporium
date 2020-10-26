@@ -118,7 +118,7 @@ class Users_model extends CI_Model
         if ($check_provider === null) {
             $check_id = $this->db->query("SELECT id FROM users WHERE user_email = '$email'")->row_array();
             if ($check_id === null) {
-                $uuid = $this->db->query("uuid_short()")->row_array()["uuid_short()"];
+                $uuid = $this->db->query("SELECT uuid_short()")->row_array()["uuid_short()"];
                 $insert_users = "INSERT INTO users(id, user_id, user_email, user_role, user_firstname, user_lastname) VALUES ($uuid, user_id(), '$email', $role_id, '$first_name', '$last_name')";
                 $insert_provider = "INSERT INTO sosmed_provider VALUES ('$uid', $uuid, '$provider', NOW())";
 

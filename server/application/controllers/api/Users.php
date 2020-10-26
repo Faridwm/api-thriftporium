@@ -517,6 +517,9 @@ class Users extends REST_Controller
     {
         $data = $this->post();
 
+        // var_dump($data);
+        // die;
+
         $validate = new Validator();
 
         $schema = (object) [
