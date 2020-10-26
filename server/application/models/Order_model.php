@@ -99,10 +99,9 @@ class Order_model extends CI_Model
         $shipping_price = $order_data["shipping_price"];
         $products = $order_data["products"];
 
-        $random = $user % 100000000000000;
 
         $transfer_to = $order_data["transfer_to"];
-        $total_price = $order_data["total_price"] + $random;
+        $total_price = $order_data["total_price"];
         $account_bank = $order_data["account_bank"];
         $account_name = $order_data["account_name"];
         $account_number = $order_data["account_number"];
